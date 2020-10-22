@@ -66,7 +66,7 @@ namespace SRI
 		if ( SRI_type == enums::vol_dev )
 			return NLKM::get_stress_S_vol(F, stress_S);
 		else if ( SRI_type == enums::normal_shear )
-			return get_normal_part(stress_S);
+			return get_shear_part(stress_S);
 	}
 	
 	
@@ -90,7 +90,7 @@ namespace SRI
 		if ( SRI_type == enums::vol_dev )
 			return NLKM::get_dKxS_dC( F, stress_S, Tangent);
 		else if ( SRI_type == enums::normal_shear )
-			return get_normal_part(Tangent);
+			return get_shear_part(Tangent);
 	}
 	
 	
