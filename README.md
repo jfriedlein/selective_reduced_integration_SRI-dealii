@@ -9,6 +9,7 @@ Selective reduced integration is one of the easiest ways to alleviate volumetric
 ## Drawbacks
 - add comparison between Q1R, Q2, Q1 and Q1SR regarding accuracy, computation time and efficiency
 - add limitations (axisym., anisotropy) and possible extension to remove these
+- currently very small convergence region (requires small load steps) - WHY?
 
 ## Extensions
 - What about F-bar, B-bar methods?
@@ -23,6 +24,8 @@ Selective reduced integration is one of the easiest ways to alleviate volumetric
 ## Modifications/Extensions to existing code
 
 0. Assembly routine & compute global force
+
+Be aware of all the uses of *fe_values_part and k_rel! The often go along with each other, e.g. in the gradients.
 
 1. Declarations
 
