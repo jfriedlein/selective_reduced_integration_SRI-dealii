@@ -10,8 +10,20 @@
 
 using namespace dealii;
 
+namespace enums
+{
+	// ToDo-optimize: rename "Newton_Raphson", because we always solve via NR, but once we use disp- or force-control ("regular") and once AL
+    enum enum_SRI_type
+	 {
+		vol_dev_split = 0,
+		shear_normal_split = 1
+	 };
+}
+
 /**
  * Namespace summarising function for selective reduced integration (SRI)
+ * - vol-dev split: RI for volumetric part and FuI for deviatoric part
+ * - shear-normal split: RI for shear part (shear-locking) and FuI for normal part
  */
 namespace SRI
 {
@@ -32,12 +44,14 @@ namespace SRI
 	 * Return the normal stress as a tensor with zero shear stresses
 	 */
 	template <int dim>
-	SymmetricTensor<2,dim> get_normal_part( const SymmetricTensor<2,dim> &SymTen )
+	SymmetricTensor<2,dim> get_shear_part( const SymmetricTensor<2,dim> &SymTen )
 	{
-		SymmetricTensor<2,dim> normal_part;
+		SymmetricTensor<2,dim> shear_part (SymTen);
+		// Loop over the diagonal (normal) entries and set them to zero.
+		// The remaining shear entries are unchanged from the above initialisation.
 		for ( unsigned m=0; m<dim ; m++ )
-			normal_part[m][m] = SymTen[m][m];
-		return normal_part;
+			shear_part[m][m] = 0;
+		return shear_part;
 	}
 	
 	
@@ -45,14 +59,16 @@ namespace SRI
 	 * Return the Tangent that corresponds to a stress tensor with only normal stresses
 	 */
 	template <int dim>
-	SymmetricTensor<4,dim> get_normal_part( const SymmetricTensor<4,dim> &SymTen )
+	SymmetricTensor<4,dim> get_shear_part( const SymmetricTensor<4,dim> &SymTen )
 	{
-		SymmetricTensor<4,dim> normal_part;
+		SymmetricTensor<4,dim> shear_part (SymTen);
+		// Loop over the normal stress entries (first two indices [m][m] and
+		// set all below entries [o][p] to zero for these related normal stresses
 		for ( unsigned m=0; m<dim ; m++ )
 			for ( unsigned o=0; o<dim ; o++ )
 				for ( unsigned p=0; p<dim ; p++ )
-					normal_part[m][m][o][p] = SymTen[m][m][o][p];
-		return normal_part;
+					shear_part[m][m][o][p] = 0;
+		return shear_part;
 	}
 	
 	
@@ -63,10 +79,12 @@ namespace SRI
 	template <int dim>
 	SymmetricTensor<2,dim> second_part ( const Tensor<2,dim> &F, const SymmetricTensor<2,dim> &stress_S, enums::enum_SRI_type SRI_type )
 	{
-		if ( SRI_type == enums::vol_dev )
+		if ( SRI_type == enums::vol_dev_split )
 			return NLKM::get_stress_S_vol(F, stress_S);
-		else if ( SRI_type == enums::normal_shear )
+		else if ( SRI_type == enums::shear_normal_split )
 			return get_shear_part(stress_S);
+		else
+			AssertThrow(false, ExcMessage("SRI<< This kind of split is not implemented. Check the available options in SRI.h."));
 	}
 	
 	
@@ -87,10 +105,12 @@ namespace SRI
 	template <int dim>
 	SymmetricTensor<4,dim> second_part ( const Tensor<2,dim> &F, const SymmetricTensor<2,dim> &stress_S, const SymmetricTensor<4,dim> &Tangent, enums::enum_SRI_type SRI_type )
 	{
-		if ( SRI_type == enums::vol_dev )
+		if ( SRI_type == enums::vol_dev_split )
 			return NLKM::get_dKxS_dC( F, stress_S, Tangent);
-		else if ( SRI_type == enums::normal_shear )
+		else if ( SRI_type == enums::shear_normal_split )
 			return get_shear_part(Tangent);
+		else
+			AssertThrow(false, ExcMessage("SRI<< This kind of split is not implemented. Check the available options in SRI.h."));
 	}
 	
 	
