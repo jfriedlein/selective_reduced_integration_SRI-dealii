@@ -15,8 +15,8 @@ void Solid<dim>::assemble_system_fstrain( /*input->*/ const unsigned int &newton
 								update_JxW_values|  //transformed quadrature weights multiplied with Jacobian of transformation
 								update_quadrature_points); /// ToDo: remove this later on
 
-	FEValues<dim> fe_values_ref_center (fe,//The used FiniteElement
-										qf_center,//The quadrature rule for the cell
+	FEValues<dim> fe_values_ref_RI (fe,//The used FiniteElement
+										qf_cell_RI,//The quadrature rule for the cell
 										update_values| //UpdateFlag for shape function values
 										update_gradients| //shape function gradients
 										update_JxW_values|  //transformed quadrature weights multiplied with Jacobian of transformation
@@ -48,7 +48,9 @@ void Solid<dim>::assemble_system_fstrain( /*input->*/ const unsigned int &newton
 		//Reinit the FEValues instance for the current cell, i.e.
 		//compute the values for the current cell
 		fe_values_ref.reinit(cell);
-		fe_values_ref_center.reinit(cell);
+
+		if ( parameter.SRI_active )
+			fe_values_ref_RI.reinit(cell);
 
 		//Vector to store the gradients of the solution at
 		//n_q_points quadrature points
@@ -84,7 +86,7 @@ void Solid<dim>::assemble_system_fstrain( /*input->*/ const unsigned int &newton
 			
 			// SRI (includes FuI)
 			 FEValues<dim> *fe_values_part = nullptr;
-			 SRI::init_fe_k( /*input->*/ fe_values_ref, fe_values_ref_center, k, n_q_points, /*output->*/ fe_values_part, k_rel );
+			 SRI::init_fe_k( /*input->*/ fe_values_ref, fe_values_ref_RI, k, n_q_points, /*output->*/ fe_values_part, k_rel );
 			 SymmetricTensor<2,dim> stress_part;
 			 SymmetricTensor<4,dim> Tangent_part;
 			
@@ -112,7 +114,7 @@ void Solid<dim>::assemble_system_fstrain( /*input->*/ const unsigned int &newton
 					SymmetricTensor<2,dim> Cauchy_stress = 1./detF * StrainMeasures::push_forward(stress_S,DefoGradient_3D,parameter.get_going_mode,GG_mode_requested);
 					
 					// Extract the desired parts from the stress in case we use SRI
-					 if ( parameter.use_SRI )
+					 if ( parameter.SRI_active )
 					 {
 						stress_part = SRI::part( DeformationGradient, stress_S, enums::enum_SRI_type(parameter.SRI_type), k, n_q_points );
 						Tangent_part = SRI::part( DeformationGradient, stress_S, Tangent, enums::enum_SRI_type(parameter.SRI_type), k, n_q_points );
