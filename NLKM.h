@@ -23,7 +23,7 @@ namespace NLKM
 	{
 		SymmetricTensor<2,dim> RCG_C = symmetrize( transpose(F)*F );
 		SymmetricTensor<2,dim> RCGinv_Cinv = invert(RCG_C);
-		SymmetricTensor<4,dim> K = 1./3. * outer_product( RCGinv_Cinv, RCG_C );
+		//SymmetricTensor<4,dim> K = 1./3. * outer_product( RCGinv_Cinv, RCG_C );
 		return 2. * 1./3. * (
 														outer_product( RCGinv_Cinv, ( RCG_C * 0.5 * Tangent + stress_S*identity_tensor<dim>()) )
 														+ (RCG_C*stress_S) * Physics::Elasticity::StandardTensors<dim>::dC_inv_dC(F)
