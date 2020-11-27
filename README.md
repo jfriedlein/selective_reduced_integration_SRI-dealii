@@ -17,7 +17,9 @@ Selective reduced integration is one of the easiest ways to alleviate volumetric
 
 @todo Check effect of normal-shear split for shear locking for instance bending
 
-@todo Currently vol-dev split gives a very small convergence radius. Is this due to local minimum from locking-dominated solution, is this some other issue or common for other locking-free element?
+## BUGS
+- Currently the code does NOT run in DEBUG mode, because we abuse the reduced integration quadrature formula quite roughly. But it runs fine in RELEASE mode.
+
 
 ## DOCU missing!!
 
