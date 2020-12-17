@@ -16,6 +16,7 @@ Volumetric Locking
 - https://www.brown.edu/Departments/Engineering/Courses/En2340/Notes/2017/L9.pdf
 - https://dianafea.com/manuals/d943/MatLib/node256.html
 - ...
+
 Selective reduced integration
 - https://dianafea.com/manuals/d944/ElmLib/node636.html
 - ...
@@ -51,7 +52,7 @@ Be aware of all the uses of *fe_values_part and k_rel! The often go along with e
 
 ```
 	const QGauss<dim>                qf_cell;
-	const QGauss<dim>                qf_center;
+	const QGauss<dim>                qf_cell_RI;
 
 	const QGauss<dim - 1>            qf_face;
 	const unsigned int               n_q_points;
@@ -63,9 +64,9 @@ Be aware of all the uses of *fe_values_part and k_rel! The often go along with e
 
 ```
 qf_cell( degree +1 + ( (parameter.reducedIntegration) ? -1 : 0 ) ),	// switch to reduced integration
-qf_center( (parameter.use_SRI) ? (degree +1 -1) : 0 ),
+qf_cell_RI( degree +1 -1 ), //qf_cell_RI( (parameter.SRI_active) ? (degree +1 -1) : 0 ),
 qf_face( degree +1 + ( (parameter.reducedIntegration) ? -1 : 0 ) ),
-n_q_points (qf_cell.size() ),
+n_q_points_RI ( (parameter.SRI_active) ? (qf_cell_RI.size()) : 0 ), //n_q_points_RI ( qf_cell_RI.size() ),
 n_SRI_qp ( qf_center.size() ),
 n_q_points_f (qf_face.size()),
 ```
