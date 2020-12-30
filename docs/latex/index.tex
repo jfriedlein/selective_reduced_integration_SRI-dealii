@@ -269,6 +269,270 @@ SymmetricTensor<2,dim> deltaRCG = 2. * symmetrize( transpose(grad\_X\_N\_u\_j) *
     \} \textcolor{comment}{// end for(cell)}
 \} \textcolor{comment}{// end assemble\_system}
 \end{DoxyCode}
+\hypertarget{index_PlainCode}{}\section{The plain program}\label{index_PlainCode}
+
+\begin{DoxyCode}
+\textcolor{comment}{// Besides all your other includes, you now also include the SRI file,}
+\textcolor{comment}{// for instance as follows: \(\backslash\)n}
+\textcolor{comment}{// Selective Reduced Integration (SRI)}
+\textcolor{preprocessor}{#include "../selective\_reduced\_integration\_SRI-dealii/SRI.h"}
+
+...
+
+\textcolor{comment}{// Then we go on and extent the deal.II typical main class, here named \(\backslash\)a Solid}
+template <\textcolor{keywordtype}{int} dim>
+\textcolor{keyword}{class }\hyperlink{classSolid}{Solid}
+\{
+    ...
+    
+    \textcolor{comment}{// Later we need certain values, e.g. the shape gradients for the displacement}
+    \textcolor{comment}{// components, so we define the following extractor \(\backslash\)a u\_fe}
+     \textcolor{keyword}{const} FEValuesExtractors::Vector \hyperlink{classSolid_a4de5ae991dbf3dcb928d0e40b9eae6dd}{u\_fe}; \textcolor{comment}{// extractor for the dim displacement components}
+
+    \textcolor{comment}{// Here we delcare your typical QGauss quadrature rule \(\backslash\)a qf\_cell}
+    \textcolor{comment}{// for the integration over the cell. We add another QGauss rule named \(\backslash\)a qf\_cell\_RI.}
+    \textcolor{comment}{// that will describe the reduced integration (RI). Furthermore, it is nice to add}
+    \textcolor{comment}{// the \(\backslash\)a n\_q\_points\_RI that stores the number of QPs for the reduced integrations}
+    \textcolor{comment}{// (for Q1SR elements that is always 1, but maybe you want to try Q2SR at some point)}
+     \textcolor{keyword}{const} QGauss<dim>                \hyperlink{classSolid_adcd7596f6521749c8a4c7ffda312df8c}{qf\_cell};
+     \textcolor{keyword}{const} QGauss<dim>                \hyperlink{classSolid_ab97c4ff4672fdb470c8a33fd0aac4650}{qf\_cell\_RI};
+     \textcolor{keyword}{const} \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int}               \hyperlink{classSolid_ae5a57e65024a6a944d6b7fdbefe7d758}{n\_q\_points};
+     \textcolor{keyword}{const} \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int}              \hyperlink{classSolid_a2a85d197b565f9a057f90e72e8d20560}{n\_q\_points\_RI};
+
+    \textcolor{comment}{// A flag to decide whether we want to use SRI (actually I always use a parameter}
+    \textcolor{comment}{// in the prm file to change element formulations)}
+     \textcolor{keyword}{const} \textcolor{keywordtype}{bool} \hyperlink{classSolid_a421ff1b855d09ee75f2ea5b1a9642607}{SRI\_active} = \textcolor{keyword}{true};
+     
+    \textcolor{comment}{// You can decide whether you want to do a volumetric-deviatoric split "vol\_dev\_split" to alleviate}
+    \textcolor{comment}{// volumetric locking or a shear-normal split "shear\_normal\_split" to counteract shear locking. For
+       this}
+    \textcolor{comment}{// an enumerator was declared inside the function in the namespace \(\backslash\)a enums}
+     \hyperlink{namespaceenums_ad159a7d6539f111883db3b07c09601a8}{enums::enum\_SRI\_type} \hyperlink{classSolid_a0d12ca91579ebfa7c292b48506eca1e2}{SRI\_type} = 
+      \hyperlink{namespaceenums_ad159a7d6539f111883db3b07c09601a8ad2c871b65148302b24a39fac6cedfd40}{enums::vol\_dev\_split};
+    
+     ...
+\}
+
+
+\textcolor{comment}{// Constructor}
+\textcolor{keyword}{template} <\textcolor{keywordtype}{int} dim>
+\hyperlink{assembly__routine__SRI_8cc_a031582e4b219de9cc57c78ebd20a2fc3}{Solid<dim>::Solid}( ... )
+:
+...
+\textcolor{comment}{// Here we choose a standard \(\backslash\)a FE\_Q (just so you know)}
+fe( FE\_Q<dim>(degree), dim),    \textcolor{comment}{// displacement}
+\hyperlink{assembly__routine__SRI_8cc_ae50a49c136e49c33fcd5a555a00009dd}{u\_fe}(0),
+\textcolor{comment}{// In the constructor for the above main class, we now also have to }
+\textcolor{comment}{// initialise the new variables, which we do as follows}
+\hyperlink{assembly__routine__SRI_8cc_aaaceb34a5b42a4954b2e893607c1bdef}{qf\_cell}( degree +1 )
+\hyperlink{assembly__routine__SRI_8cc_ab9727a7376e2656d3cd40c65ac7efb81}{qf\_cell\_RI}( degree +1 -1 ),
+\hyperlink{assembly__routine__SRI_8cc_afd52b693751274175b93a58458201e6b}{n\_q\_points} (\hyperlink{assembly__routine__SRI_8cc_aaaceb34a5b42a4954b2e893607c1bdef}{qf\_cell}.size()),
+\hyperlink{assembly__routine__SRI_8cc_a0b72b2a33d52b7597b87df35b5b92415}{n\_q\_points\_RI} ( \hyperlink{assembly__routine__SRI_8cc_a535468030220abae9305a26e9d7f7401}{SRI\_active} ? (\hyperlink{assembly__routine__SRI_8cc_ab9727a7376e2656d3cd40c65ac7efb81}{qf\_cell\_RI}.size()) : 0 ),
+...
+\{
+\}
+
+
+\textcolor{comment}{// Assemble one-field finite strain over material configuration \(\backslash\)n}
+\textcolor{comment}{// We emphasis the relevant changes in the comment by a leading [SRI]}
+\textcolor{keyword}{template} <\textcolor{keywordtype}{int} dim>
+\textcolor{keywordtype}{void} \hyperlink{classSolid}{Solid<dim>::assemble\_system\_fstrain}( \textcolor{comment}{/*output-> tangent\_matrix,
+       system\_rhs*/} )
+\{
+    \textcolor{comment}{// FEValues and FaceValues to compute quantities on quadrature points for our finite}
+    \textcolor{comment}{// element space including mapping from the real cell.}
+    \textcolor{comment}{// There are no requirements on this \(\backslash\)a \(\backslash\)fe\_values\_ref and \(\backslash\)fe\_vace\_values\_ref for SRI,}
+    \textcolor{comment}{// so you can keep your standard code for these.}
+     FEValues<dim> fe\_values\_ref (  fe,\textcolor{comment}{//The used FiniteElement}
+                                    \hyperlink{assembly__routine__SRI_8cc_aaaceb34a5b42a4954b2e893607c1bdef}{qf\_cell},\textcolor{comment}{//The quadrature rule for the cell}
+                                    update\_values| \textcolor{comment}{//UpdateFlag for shape function values}
+                                    update\_gradients| \textcolor{comment}{//shape function gradients}
+                                    update\_JxW\_values|  \textcolor{comment}{//transformed quadrature weights multiplied with
+       Jacobian of transformation}
+                                    update\_quadrature\_points );
+
+     FEFaceValues<dim> fe\_face\_values\_ref ( fe,
+                                            qf\_face, \textcolor{comment}{//The quadrature for face quadrature points}
+                                            update\_values|
+                                            update\_gradients|
+                                            update\_normal\_vectors| \textcolor{comment}{//compute normal vector for face}
+                                            update\_JxW\_values|
+                                            update\_quadrature\_points|
+                                            update\_jacobians );
+
+    \textcolor{comment}{// [SRI] In addition for SRIs we define the reduced integration rule}
+     FEValues<dim> fe\_values\_ref\_RI (   fe,\textcolor{comment}{//The used FiniteElement}
+                                        \hyperlink{assembly__routine__SRI_8cc_ab9727a7376e2656d3cd40c65ac7efb81}{qf\_cell\_RI},\textcolor{comment}{//The quadrature rule for the cell}
+                                        update\_values | \textcolor{comment}{//UpdateFlag for shape function values}
+                                        update\_gradients | \textcolor{comment}{//shape function gradients}
+                                        update\_JxW\_values );  \textcolor{comment}{//transformed quadrature weights multiplied
+       with Jacobian of transformation}
+
+
+    \textcolor{comment}{// Quantities to store the local rhs and matrix contribution}
+     FullMatrix<double> cell\_matrix(dofs\_per\_cell,dofs\_per\_cell);
+     Vector<double> cell\_rhs (dofs\_per\_cell);
+    \textcolor{comment}{// Vector with the indices (global) of the local dofs}
+     std::vector<types::global\_dof\_index> local\_dof\_indices (dofs\_per\_cell);
+    \textcolor{comment}{// Compute the current, total solution, i.e. starting value of}
+    \textcolor{comment}{// current load step and current solution\_delta}
+     Vector<double> current\_solution = get\_total\_solution(this->solution\_delta);
+
+    \textcolor{comment}{// Tangents class and Tangent members}
+     Tangent\_groups\_u<dim> Tangents;
+     SymmetricTensor<4,dim> Tangent;
+     SymmetricTensor<2,dim> Tangent\_theta;
+
+    \textcolor{comment}{// Iterators to loop over all active cells}
+     \textcolor{keyword}{typename} DoFHandler<dim>::active\_cell\_iterator cell = dof\_handler\_ref.begin\_active(),
+                                                    endc = dof\_handler\_ref.end();
+
+    \textcolor{keywordflow}{for}(;cell!=endc;++cell)
+    \{
+        \textcolor{comment}{// Reset the local rhs and matrix for every cell}
+         cell\_matrix=0.0;
+         cell\_rhs=0.0;
+        \textcolor{comment}{// Reinit the FEValues instance for the current cell, i.e.}
+        \textcolor{comment}{// compute the values for the current cell}
+         fe\_values\_ref.reinit(cell);
+
+        \textcolor{comment}{// [SRI] Also reinit the RI rule for SRI}
+         \textcolor{keywordflow}{if} ( \hyperlink{assembly__routine__SRI_8cc_a535468030220abae9305a26e9d7f7401}{SRI\_active} )
+            fe\_values\_ref\_RI.reinit(cell);
+
+        \textcolor{comment}{// Vector to store the gradients of the solution at}
+        \textcolor{comment}{// n\_q\_points quadrature points}
+         std::vector<Tensor<2,dim> > solution\_grads\_u(\hyperlink{assembly__routine__SRI_8cc_afd52b693751274175b93a58458201e6b}{n\_q\_points});
+        \textcolor{comment}{// Fill the previous vector using get\_function\_gradients}
+         fe\_values\_ref[\hyperlink{assembly__routine__SRI_8cc_ae50a49c136e49c33fcd5a555a00009dd}{u\_fe}].get\_function\_gradients(current\_solution,solution\_grads\_u);
+
+        \textcolor{comment}{// [SRI] Prepare the solutions gradients for the RI rule. Herein we extend}
+        \textcolor{comment}{// the given vector of solution gradients by the additional gradients at the reduced}
+        \textcolor{comment}{// integration quadrature points.}
+         \textcolor{keywordflow}{if} ( \hyperlink{assembly__routine__SRI_8cc_a535468030220abae9305a26e9d7f7401}{SRI\_active} )
+             \hyperlink{namespaceSRI_add98d0fc70a6c51803dfd8c491547413}{SRI::prepare\_solGrads}( \hyperlink{assembly__routine__SRI_8cc_a0b72b2a33d52b7597b87df35b5b92415}{n\_q\_points\_RI}, fe\_values\_ref\_RI, 
+      current\_solution, solution\_grads\_u );
+
+        \textcolor{comment}{// [SRI] k\_rel is the relative qp-counter used for everything related to}
+        \textcolor{comment}{// FEValues objects and needed for SRI}
+         \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} k\_rel = 0;
+
+        \textcolor{comment}{// Write the global indices of the local dofs of the current cell}
+         cell->get\_dof\_indices(local\_dof\_indices);
+
+        \textcolor{comment}{// Get the QPH for the QPs of the current cell, all stored in one vector of pointers}
+         \textcolor{keyword}{const} std::vector< std::shared\_ptr< PointHistory<dim> > > lqph = quadrature\_point\_history.get\_data
+      (cell);
+
+        \textcolor{comment}{// [SRI] Loop over all quadrature points of the cell \(\backslash\)n}
+        \textcolor{comment}{// For SRI the variable \(\backslash\)a n\_q\_points\_RI contains the number of QPs for reduced integration}
+        \textcolor{comment}{// over which we also loop. Else (FuI, RI, Fbar) this number is zero, so we don't loop}
+        \textcolor{comment}{// over these additional QPs}
+        \textcolor{keywordflow}{for}( \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} k=0; k < (\hyperlink{assembly__routine__SRI_8cc_afd52b693751274175b93a58458201e6b}{n\_q\_points}+\hyperlink{assembly__routine__SRI_8cc_a0b72b2a33d52b7597b87df35b5b92415}{n\_q\_points\_RI}); ++k )
+        \{
+            \textcolor{comment}{// Compute the deformation gradient from the solution gradients. Note that the}
+            \textcolor{comment}{// vector of solutions gradients has been, in case of SRI, been extended by the}
+            \textcolor{comment}{// values at the RI QPs, so we have to use the full QP counter \(\backslash\)a k.}
+            \textcolor{comment}{// @note If you want to work with 2D or even axisymmetry, you would need to}
+            \textcolor{comment}{// modify the deformation gradient now and cross some more t's (see
+       https://github.com/jfriedlein/2D\_axial-symmetry\_plane-strain\_dealii).}
+            \textcolor{comment}{//}
+             Tensor<2,dim> DeformationGradient = (Tensor<2, dim>(StandardTensors::I<dim>()) + 
+      solution\_grads\_u[k]);
+
+            \textcolor{comment}{// [SRI] SRI (does no harm to the remaining ELFORMs) \(\backslash\)n}
+            \textcolor{comment}{// We initalise the \(\backslash\)a fe\_values\_part pointer with the currently needed}
+            \textcolor{comment}{// FEValues quantity. For the first \(\backslash\)a n\_q\_points quadrature points we}
+            \textcolor{comment}{// assign the standard \(\backslash\)a fe\_values\_ref and in the remaining \(\backslash\)a n\_q\_points\_RI}
+            \textcolor{comment}{// we use the \(\backslash\)a fe\_values\_ref\_RI for the reduced integration}
+             FEValues<dim> *fe\_values\_part = \textcolor{keyword}{nullptr};
+             \hyperlink{namespaceSRI_a304be230ce6414b79b92c2921ad38524}{SRI::init\_fe\_k}( \textcolor{comment}{/*input->*/} fe\_values\_ref, fe\_values\_ref\_RI, k, 
+      \hyperlink{assembly__routine__SRI_8cc_afd52b693751274175b93a58458201e6b}{n\_q\_points},
+                             \textcolor{comment}{/*output->*/} fe\_values\_part, k\_rel );
+            \textcolor{comment}{// [SRI] We declare *\_part variables for the stress and the tangent, that}
+            \textcolor{comment}{// eiter contain the deviatoric or volumetric parts}
+             SymmetricTensor<2,dim> stress\_part;
+             SymmetricTensor<4,dim> Tangent\_part;
+
+            \textcolor{comment}{// The material model will still return the full stress and tangents, because}
+            \textcolor{comment}{// we call it with the standard deformation gradient. Thus, we also create the}
+            \textcolor{comment}{// full stress and tangent as tensor. (There is certainly a more efficient way to do this.)}
+             SymmetricTensor<2,dim> stress\_S;
+             SymmetricTensor<4,dim> dS\_dC;
+
+            \textcolor{comment}{// Now you have to call your material model with the deformation gradient and}
+            \textcolor{comment}{// whatever else, to get your stress and tangent. The following is just a dummy}
+            \textcolor{comment}{// and far from my actual code.}
+             elastoplasticity( DeformationGradient, lqph[k], stress\_S, dS\_dC );
+
+            \textcolor{comment}{// [SRI] Extract the desired parts from the stress and tangent, in case we use SRI.}
+            \textcolor{comment}{// Depending on the \(\backslash\)a SRI\_type, we now do either a volumetric-deviatoric split or}
+            \textcolor{comment}{// a trivial normal-shear split.}
+             \textcolor{keywordflow}{if} ( \hyperlink{assembly__routine__SRI_8cc_a535468030220abae9305a26e9d7f7401}{SRI\_active} )
+             \{
+                stress\_part = SRI::part<dim>( DeformationGradient, stress\_S, SRi\_type, k, 
+      \hyperlink{assembly__routine__SRI_8cc_afd52b693751274175b93a58458201e6b}{n\_q\_points} );
+                Tangent\_part = SRI::part<dim>( DeformationGradient, stress\_S, dS\_dC, 
+      \hyperlink{assembly__routine__SRI_8cc_a163566963ded80f68a5bbc6d04ce0adf}{SRI\_type}, k, \hyperlink{assembly__routine__SRI_8cc_afd52b693751274175b93a58458201e6b}{n\_q\_points} );
+             \}
+             \textcolor{comment}{// For full integration, we just copy the full tensors into the *\_part variables}
+             \textcolor{keywordflow}{else}
+             \{
+                stress\_part = stress\_S;
+                Tangent\_part = dS\_dC;
+             \}
+
+            \textcolor{comment}{// [SRI] The quadrature weight for the current quadrature point.}
+            \textcolor{comment}{// That seems to be a daily task, but due to the variable FEValues}
+            \textcolor{comment}{// element you have to use the general *\_part variable and the relative}
+            \textcolor{comment}{// QP counter \(\backslash\)a k\_rel}
+             \textcolor{keyword}{const} \textcolor{keywordtype}{double} JxW = (*fe\_values\_part).JxW(k\_rel);
+
+            \textcolor{comment}{// Loop over all dof's of the cell}
+             \textcolor{keywordflow}{for}(\textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} i=0; i < dofs\_per\_cell; ++i)
+             \{
+                \textcolor{comment}{// [SRI] Assemble system\_rhs contribution}
+                \textcolor{comment}{// Here we also access the FEValues, so we replace this by the}
+                \textcolor{comment}{// *\_part counterpart together with \(\backslash\)a k-rel}
+                 Tensor<2,dim> grad\_X\_N\_u\_i = (*fe\_values\_part)[\hyperlink{assembly__routine__SRI_8cc_ae50a49c136e49c33fcd5a555a00009dd}{u\_fe}].gradient(i,k\_rel);
+
+                \textcolor{comment}{// [SRI] The standard residual as shown on GitHub. Note that this is exactly the same}
+                \textcolor{comment}{// as without SRI, only that we replace the PK2 stress by the stress part \(\backslash\)stress\_part}
+                \textcolor{comment}{// that either contains the volumetric or deviatoric stress (or normal-shear)}
+                cell\_rhs(i) -= ( symmetrize( transpose(DeformationGradient) * grad\_X\_N\_u\_i ) * stress\_part 
+      ) * JxW;
+
+                \textcolor{keywordflow}{for}(\textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} j=0; j<dofs\_per\_cell; ++j)
+                \{
+                    \textcolor{comment}{// [SRI] Assemble tangent contribution}
+                     Tensor<2,dim> grad\_X\_N\_u\_j = (*fe\_values\_part)[\hyperlink{assembly__routine__SRI_8cc_ae50a49c136e49c33fcd5a555a00009dd}{u\_fe}].gradient(j,k\_rel);
+
+                    \textcolor{comment}{// The linearisation of the right Cauchy-Green tensor (You will recall this line}
+                    \textcolor{comment}{// when you take a closer look at the F-bar formulation)}
+                     SymmetricTensor<2,dim> deltaRCG = 2. * symmetrize( transpose(grad\_X\_N\_u\_j) * 
+      DeformationGradient );
+
+                    \textcolor{comment}{// Again, the only difference to the standard integration, is that we replace}
+                    \textcolor{comment}{// the stress and now also the tangent by the *\_part counterparts. That's it!}
+                    cell\_matrix(i,j) += (
+                                            symmetrize( transpose(grad\_X\_N\_u\_i) * grad\_X\_N\_u\_j ) * 
+      stress\_part
+                                            +
+                                            symmetrize( transpose(DeformationGradient) * grad\_X\_N\_u\_i )
+                                              ( Tangent\_part * deltaRCG )
+                                        )
+                                          JxW;
+                \} \textcolor{comment}{// end for(j)}
+             \} \textcolor{comment}{// end for(i)}
+        \} \textcolor{comment}{// end for(k)}
+
+        \textcolor{comment}{// Copy local to global:}
+        constraints.distribute\_local\_to\_global(cell\_matrix,cell\_rhs,
+                                local\_dof\_indices,
+                                tangent\_matrix,system\_rhs,\textcolor{keyword}{false});
+    \} \textcolor{comment}{// end for(cell)}
+\} \textcolor{comment}{// end assemble\_system}
+\end{DoxyCode}
 \hypertarget{index_END}{}\section{The End}\label{index_END}
 Hosted via Git\+Hub according to \href{https://goseeky.wordpress.com/2017/07/22/documentation-101-doxygen-with-github-pages/}{\tt https\+://goseeky.\+wordpress.\+com/2017/07/22/documentation-\/101-\/doxygen-\/with-\/github-\/pages/} ~\newline
 Design of the documentation inspired by the deal.\+ii tutorial programs. 

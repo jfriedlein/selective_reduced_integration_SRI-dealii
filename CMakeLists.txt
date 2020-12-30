@@ -54,7 +54,7 @@ IF(DOXYGEN_FOUND)
 
   ## Configure doxygen
   SET( DOXYGEN_PROJECT_NAME "Selective reduced integration (SRI) in deal.II" ) # Title of your project
-  SET( DOXYGEN_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/doc ) # here you specify the output directory
+  SET( DOXYGEN_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/docs ) # here you specify the output directory
   SET( DOXYGEN_QUIET YES )
   SET( DOXYGEN_ENABLE_PREPROCESSING YES )
   SET( DOXYGEN_PREDEFINED "DOXYGEN" )
@@ -67,7 +67,7 @@ IF(DOXYGEN_FOUND)
   SET( DOXYGEN_USE_MATHJAX YES )
 
   SET( DOXYGEN_FILE_PATTERNS *.cc *.h ) #Files to look for documentation
-  SET( DOXYGEN_EXCLUDE_PATTERNS */build/* */OoO/* */doc/*) #<- Exclude doxygen from looking for documentation in these files.
+  SET( DOXYGEN_EXCLUDE_PATTERNS */build/* */OoO/* */docs/*) #<- Exclude doxygen from looking for documentation in these files.
 
   doxygen_add_docs( doc ${CMAKE_SOURCE_DIR}
                     COMMENT "Generating documentation with Doxygen")

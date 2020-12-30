@@ -17,6 +17,12 @@
 assembly_routine_SRI.cc
 \endcode
 
+@section PlainCode The plain program
+
+\codePlain
+assembly_routine_SRI.cc
+\endcode
+
 @section END The End
 
 Hosted via GitHub according to https://goseeky.wordpress.com/2017/07/22/documentation-101-doxygen-with-github-pages/ \n
