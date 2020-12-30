@@ -1,0 +1,103 @@
+\hypertarget{assembly__routine__SRI_8cc}{}\section{assembly\+\_\+routine\+\_\+\+S\+R\+I.\+cc File Reference}
+\label{assembly__routine__SRI_8cc}\index{assembly\+\_\+routine\+\_\+\+S\+R\+I.\+cc@{assembly\+\_\+routine\+\_\+\+S\+R\+I.\+cc}}
+{\ttfamily \#include \char`\"{}../selective\+\_\+reduced\+\_\+integration\+\_\+\+S\+R\+I-\/dealii/\+S\+R\+I.\+h\char`\"{}}\\*
+Include dependency graph for assembly\+\_\+routine\+\_\+\+S\+R\+I.\+cc\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{assembly__routine__SRI_8cc__incl}
+\end{center}
+\end{figure}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{classSolid}{Solid$<$ dim $>$}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$int dim$>$ }\\class \hyperlink{classSolid}{Solid} \hyperlink{assembly__routine__SRI_8cc_a031582e4b219de9cc57c78ebd20a2fc3}{Solid} (...)
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+const F\+E\+Values\+Extractors\+::\+Vector \hyperlink{assembly__routine__SRI_8cc_ae50a49c136e49c33fcd5a555a00009dd}{u\+\_\+fe}
+\item 
+const Q\+Gauss$<$ dim $>$ \hyperlink{assembly__routine__SRI_8cc_aaaceb34a5b42a4954b2e893607c1bdef}{qf\+\_\+cell}
+\item 
+const Q\+Gauss$<$ dim $>$ \hyperlink{assembly__routine__SRI_8cc_ab9727a7376e2656d3cd40c65ac7efb81}{qf\+\_\+cell\+\_\+\+RI}
+\item 
+const unsigned int \hyperlink{assembly__routine__SRI_8cc_afd52b693751274175b93a58458201e6b}{n\+\_\+q\+\_\+points}
+\item 
+const unsigned int \hyperlink{assembly__routine__SRI_8cc_a0b72b2a33d52b7597b87df35b5b92415}{n\+\_\+q\+\_\+points\+\_\+\+RI}
+\item 
+const bool \hyperlink{assembly__routine__SRI_8cc_a535468030220abae9305a26e9d7f7401}{S\+R\+I\+\_\+active} = true
+\item 
+\hyperlink{namespaceenums_ad159a7d6539f111883db3b07c09601a8}{enums\+::enum\+\_\+\+S\+R\+I\+\_\+type} \hyperlink{assembly__routine__SRI_8cc_a163566963ded80f68a5bbc6d04ce0adf}{S\+R\+I\+\_\+type} = \hyperlink{namespaceenums_ad159a7d6539f111883db3b07c09601a8ad2c871b65148302b24a39fac6cedfd40}{enums\+::vol\+\_\+dev\+\_\+split}
+\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\index{assembly\+\_\+routine\+\_\+\+S\+R\+I.\+cc@{assembly\+\_\+routine\+\_\+\+S\+R\+I.\+cc}!Solid@{Solid}}
+\index{Solid@{Solid}!assembly\+\_\+routine\+\_\+\+S\+R\+I.\+cc@{assembly\+\_\+routine\+\_\+\+S\+R\+I.\+cc}}
+\subsubsection[{\texorpdfstring{Solid(...)}{Solid(...)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$int dim$>$ class {\bf Solid} {\bf Solid} (
+\begin{DoxyParamCaption}
+\item[{}]{...}
+\end{DoxyParamCaption}
+)}\hypertarget{assembly__routine__SRI_8cc_a031582e4b219de9cc57c78ebd20a2fc3}{}\label{assembly__routine__SRI_8cc_a031582e4b219de9cc57c78ebd20a2fc3}
+
+
+Definition at line 44 of file assembly\+\_\+routine\+\_\+\+S\+R\+I.\+cc.
+
+
+
+\subsection{Variable Documentation}
+\index{assembly\+\_\+routine\+\_\+\+S\+R\+I.\+cc@{assembly\+\_\+routine\+\_\+\+S\+R\+I.\+cc}!n\+\_\+q\+\_\+points@{n\+\_\+q\+\_\+points}}
+\index{n\+\_\+q\+\_\+points@{n\+\_\+q\+\_\+points}!assembly\+\_\+routine\+\_\+\+S\+R\+I.\+cc@{assembly\+\_\+routine\+\_\+\+S\+R\+I.\+cc}}
+\subsubsection[{\texorpdfstring{n\+\_\+q\+\_\+points}{n_q_points}}]{\setlength{\rightskip}{0pt plus 5cm}const unsigned int n\+\_\+q\+\_\+points}\hypertarget{assembly__routine__SRI_8cc_afd52b693751274175b93a58458201e6b}{}\label{assembly__routine__SRI_8cc_afd52b693751274175b93a58458201e6b}
+
+
+Definition at line 15 of file assembly\+\_\+routine\+\_\+\+S\+R\+I.\+cc.
+
+\index{assembly\+\_\+routine\+\_\+\+S\+R\+I.\+cc@{assembly\+\_\+routine\+\_\+\+S\+R\+I.\+cc}!n\+\_\+q\+\_\+points\+\_\+\+RI@{n\+\_\+q\+\_\+points\+\_\+\+RI}}
+\index{n\+\_\+q\+\_\+points\+\_\+\+RI@{n\+\_\+q\+\_\+points\+\_\+\+RI}!assembly\+\_\+routine\+\_\+\+S\+R\+I.\+cc@{assembly\+\_\+routine\+\_\+\+S\+R\+I.\+cc}}
+\subsubsection[{\texorpdfstring{n\+\_\+q\+\_\+points\+\_\+\+RI}{n_q_points_RI}}]{\setlength{\rightskip}{0pt plus 5cm}const unsigned int n\+\_\+q\+\_\+points\+\_\+\+RI}\hypertarget{assembly__routine__SRI_8cc_a0b72b2a33d52b7597b87df35b5b92415}{}\label{assembly__routine__SRI_8cc_a0b72b2a33d52b7597b87df35b5b92415}
+
+
+Definition at line 16 of file assembly\+\_\+routine\+\_\+\+S\+R\+I.\+cc.
+
+\index{assembly\+\_\+routine\+\_\+\+S\+R\+I.\+cc@{assembly\+\_\+routine\+\_\+\+S\+R\+I.\+cc}!qf\+\_\+cell@{qf\+\_\+cell}}
+\index{qf\+\_\+cell@{qf\+\_\+cell}!assembly\+\_\+routine\+\_\+\+S\+R\+I.\+cc@{assembly\+\_\+routine\+\_\+\+S\+R\+I.\+cc}}
+\subsubsection[{\texorpdfstring{qf\+\_\+cell}{qf_cell}}]{\setlength{\rightskip}{0pt plus 5cm}const Q\+Gauss$<$dim$>$ qf\+\_\+cell}\hypertarget{assembly__routine__SRI_8cc_aaaceb34a5b42a4954b2e893607c1bdef}{}\label{assembly__routine__SRI_8cc_aaaceb34a5b42a4954b2e893607c1bdef}
+
+
+Definition at line 13 of file assembly\+\_\+routine\+\_\+\+S\+R\+I.\+cc.
+
+\index{assembly\+\_\+routine\+\_\+\+S\+R\+I.\+cc@{assembly\+\_\+routine\+\_\+\+S\+R\+I.\+cc}!qf\+\_\+cell\+\_\+\+RI@{qf\+\_\+cell\+\_\+\+RI}}
+\index{qf\+\_\+cell\+\_\+\+RI@{qf\+\_\+cell\+\_\+\+RI}!assembly\+\_\+routine\+\_\+\+S\+R\+I.\+cc@{assembly\+\_\+routine\+\_\+\+S\+R\+I.\+cc}}
+\subsubsection[{\texorpdfstring{qf\+\_\+cell\+\_\+\+RI}{qf_cell_RI}}]{\setlength{\rightskip}{0pt plus 5cm}const Q\+Gauss$<$dim$>$ qf\+\_\+cell\+\_\+\+RI}\hypertarget{assembly__routine__SRI_8cc_ab9727a7376e2656d3cd40c65ac7efb81}{}\label{assembly__routine__SRI_8cc_ab9727a7376e2656d3cd40c65ac7efb81}
+
+
+Definition at line 14 of file assembly\+\_\+routine\+\_\+\+S\+R\+I.\+cc.
+
+\index{assembly\+\_\+routine\+\_\+\+S\+R\+I.\+cc@{assembly\+\_\+routine\+\_\+\+S\+R\+I.\+cc}!S\+R\+I\+\_\+active@{S\+R\+I\+\_\+active}}
+\index{S\+R\+I\+\_\+active@{S\+R\+I\+\_\+active}!assembly\+\_\+routine\+\_\+\+S\+R\+I.\+cc@{assembly\+\_\+routine\+\_\+\+S\+R\+I.\+cc}}
+\subsubsection[{\texorpdfstring{S\+R\+I\+\_\+active}{SRI_active}}]{\setlength{\rightskip}{0pt plus 5cm}const bool S\+R\+I\+\_\+active = true}\hypertarget{assembly__routine__SRI_8cc_a535468030220abae9305a26e9d7f7401}{}\label{assembly__routine__SRI_8cc_a535468030220abae9305a26e9d7f7401}
+
+
+Definition at line 20 of file assembly\+\_\+routine\+\_\+\+S\+R\+I.\+cc.
+
+\index{assembly\+\_\+routine\+\_\+\+S\+R\+I.\+cc@{assembly\+\_\+routine\+\_\+\+S\+R\+I.\+cc}!S\+R\+I\+\_\+type@{S\+R\+I\+\_\+type}}
+\index{S\+R\+I\+\_\+type@{S\+R\+I\+\_\+type}!assembly\+\_\+routine\+\_\+\+S\+R\+I.\+cc@{assembly\+\_\+routine\+\_\+\+S\+R\+I.\+cc}}
+\subsubsection[{\texorpdfstring{S\+R\+I\+\_\+type}{SRI_type}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf enums\+::enum\+\_\+\+S\+R\+I\+\_\+type} S\+R\+I\+\_\+type = {\bf enums\+::vol\+\_\+dev\+\_\+split}}\hypertarget{assembly__routine__SRI_8cc_a163566963ded80f68a5bbc6d04ce0adf}{}\label{assembly__routine__SRI_8cc_a163566963ded80f68a5bbc6d04ce0adf}
+
+
+Definition at line 25 of file assembly\+\_\+routine\+\_\+\+S\+R\+I.\+cc.
+
+\index{assembly\+\_\+routine\+\_\+\+S\+R\+I.\+cc@{assembly\+\_\+routine\+\_\+\+S\+R\+I.\+cc}!u\+\_\+fe@{u\+\_\+fe}}
+\index{u\+\_\+fe@{u\+\_\+fe}!assembly\+\_\+routine\+\_\+\+S\+R\+I.\+cc@{assembly\+\_\+routine\+\_\+\+S\+R\+I.\+cc}}
+\subsubsection[{\texorpdfstring{u\+\_\+fe}{u_fe}}]{\setlength{\rightskip}{0pt plus 5cm}const F\+E\+Values\+Extractors\+::\+Vector u\+\_\+fe}\hypertarget{assembly__routine__SRI_8cc_ae50a49c136e49c33fcd5a555a00009dd}{}\label{assembly__routine__SRI_8cc_ae50a49c136e49c33fcd5a555a00009dd}
+
+
+Definition at line 6 of file assembly\+\_\+routine\+\_\+\+S\+R\+I.\+cc.
+

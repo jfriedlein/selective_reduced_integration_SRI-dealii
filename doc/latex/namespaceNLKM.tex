@@ -1,0 +1,52 @@
+\hypertarget{namespaceNLKM}{}\section{N\+L\+KM Namespace Reference}
+\label{namespaceNLKM}\index{N\+L\+KM@{N\+L\+KM}}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$int dim$>$ }\\Symmetric\+Tensor$<$ 2, dim $>$ \hyperlink{namespaceNLKM_a1ccf48261890fc2be5d1e97f03c62ce5}{get\+\_\+stress\+\_\+\+S\+\_\+vol} (const Tensor$<$ 2, dim $>$ \&F, const Symmetric\+Tensor$<$ 2, dim $>$ \&stress\+\_\+S)
+\item 
+{\footnotesize template$<$int dim$>$ }\\Symmetric\+Tensor$<$ 4, dim $>$ \hyperlink{namespaceNLKM_aa0abeda2910b5d2974905bdab35bae78}{get\+\_\+d\+Kx\+S\+\_\+dC} (const Tensor$<$ 2, dim $>$ \&F, const Symmetric\+Tensor$<$ 2, dim $>$ \&stress\+\_\+S, const Symmetric\+Tensor$<$ 4, dim $>$ \&Tangent)
+\end{DoxyCompactItemize}
+
+
+\subsection{Function Documentation}
+\index{N\+L\+KM@{N\+L\+KM}!get\+\_\+d\+Kx\+S\+\_\+dC@{get\+\_\+d\+Kx\+S\+\_\+dC}}
+\index{get\+\_\+d\+Kx\+S\+\_\+dC@{get\+\_\+d\+Kx\+S\+\_\+dC}!N\+L\+KM@{N\+L\+KM}}
+\subsubsection[{\texorpdfstring{get\+\_\+d\+Kx\+S\+\_\+d\+C(const Tensor$<$ 2, dim $>$ \&\+F, const Symmetric\+Tensor$<$ 2, dim $>$ \&stress\+\_\+\+S, const Symmetric\+Tensor$<$ 4, dim $>$ \&\+Tangent)}{get_dKxS_dC(const Tensor< 2, dim > &F, const SymmetricTensor< 2, dim > &stress_S, const SymmetricTensor< 4, dim > &Tangent)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$int dim$>$ Symmetric\+Tensor$<$4,dim$>$ N\+L\+K\+M\+::get\+\_\+d\+Kx\+S\+\_\+dC (
+\begin{DoxyParamCaption}
+\item[{const Tensor$<$ 2, dim $>$ \&}]{F, }
+\item[{const Symmetric\+Tensor$<$ 2, dim $>$ \&}]{stress\+\_\+S, }
+\item[{const Symmetric\+Tensor$<$ 4, dim $>$ \&}]{Tangent}
+\end{DoxyParamCaption}
+)}\hypertarget{namespaceNLKM_aa0abeda2910b5d2974905bdab35bae78}{}\label{namespaceNLKM_aa0abeda2910b5d2974905bdab35bae78}
+\begin{DoxyNote}{Note}
+We don\textquotesingle{}t use the Lagrangian tangent defined as $ C = 2 \frac{\partial S}{\partial C} $ here, but only the derivative $ \frac{\partial S}{\partial C} $. Hence, make sure you incorporate the factor of 2 in your assembly routine. If you want to use the Lagrangian tangent you would have to multiply {\itshape Tangent} by 0.\+5 and the overall returned result by 2. 
+\end{DoxyNote}
+
+\begin{DoxyParams}{Parameters}
+{\em F} & \\
+\hline
+{\em stress\+\_\+S} & \\
+\hline
+{\em Tangent} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+
+
+Definition at line 31 of file N\+L\+K\+M.\+h.
+
+\index{N\+L\+KM@{N\+L\+KM}!get\+\_\+stress\+\_\+\+S\+\_\+vol@{get\+\_\+stress\+\_\+\+S\+\_\+vol}}
+\index{get\+\_\+stress\+\_\+\+S\+\_\+vol@{get\+\_\+stress\+\_\+\+S\+\_\+vol}!N\+L\+KM@{N\+L\+KM}}
+\subsubsection[{\texorpdfstring{get\+\_\+stress\+\_\+\+S\+\_\+vol(const Tensor$<$ 2, dim $>$ \&\+F, const Symmetric\+Tensor$<$ 2, dim $>$ \&stress\+\_\+\+S)}{get_stress_S_vol(const Tensor< 2, dim > &F, const SymmetricTensor< 2, dim > &stress_S)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$int dim$>$ Symmetric\+Tensor$<$2,dim$>$ N\+L\+K\+M\+::get\+\_\+stress\+\_\+\+S\+\_\+vol (
+\begin{DoxyParamCaption}
+\item[{const Tensor$<$ 2, dim $>$ \&}]{F, }
+\item[{const Symmetric\+Tensor$<$ 2, dim $>$ \&}]{stress\+\_\+S}
+\end{DoxyParamCaption}
+)}\hypertarget{namespaceNLKM_a1ccf48261890fc2be5d1e97f03c62ce5}{}\label{namespaceNLKM_a1ccf48261890fc2be5d1e97f03c62ce5}
+
+
+Definition at line 14 of file N\+L\+K\+M.\+h.
+

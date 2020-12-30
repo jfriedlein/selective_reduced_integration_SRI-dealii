@@ -84,12 +84,12 @@ In your main class (in deal.II it is named for instance "step3" [deal.II step3 t
 2. Constructor
 In the constructor for the above main class, we now also have to  initialise the new variables, which we do as follows
 ```
-...,
-qf_cell( degree +1  ),
-qf_cell_RI( degree +1 -1 ),
-n_q_points (qf_cell.size()),
-n_q_points_RI ( SRI_activeI) ? (qf_cell_RI.size()) : 0 ),
-...
+	...,
+	qf_cell( degree +1  ),
+	qf_cell_RI( degree +1 -1 ),
+	n_q_points (qf_cell.size()),
+	n_q_points_RI ( SRI_active ? (qf_cell_RI.size()) : 0 ),
+	...
 ```
 The standard `qf_cell` is initialised as usual, where `degree` denotes the polynomial order that is used for the element (1: linear element, 2: quadratic element, ...). The reduced integration uses one order less, so we init the `qf_cell_RI` with the order of `qf_cell` minus 1. The number of quadrature point for RI is set to its standard value `qf_cell_RI.size())` in case we want to use SRI (boolean flag `SRI_active` is true, else we set this number to zero.
 

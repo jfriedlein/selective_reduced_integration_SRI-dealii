@@ -1,0 +1,67 @@
+\hypertarget{SRI_8h}{}\section{S\+R\+I.\+h File Reference}
+\label{SRI_8h}\index{S\+R\+I.\+h@{S\+R\+I.\+h}}
+{\ttfamily \#include $<$deal.\+I\+I/base/tensor.\+h$>$}\\*
+{\ttfamily \#include $<$deal.\+I\+I/base/symmetric\+\_\+tensor.\+h$>$}\\*
+{\ttfamily \#include $<$deal.\+I\+I/physics/elasticity/standard\+\_\+tensors.\+h$>$}\\*
+{\ttfamily \#include $<$iostream$>$}\\*
+{\ttfamily \#include \char`\"{}N\+L\+K\+M.\+h\char`\"{}}\\*
+Include dependency graph for S\+R\+I.\+h\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{SRI_8h__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=209pt]{SRI_8h__dep__incl}
+\end{center}
+\end{figure}
+\subsection*{Namespaces}
+\begin{DoxyCompactItemize}
+\item 
+ \hyperlink{namespaceenums}{enums}
+\item 
+ \hyperlink{namespaceSRI}{S\+RI}
+\end{DoxyCompactItemize}
+\subsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \hyperlink{namespaceenums_ad159a7d6539f111883db3b07c09601a8}{enums\+::enum\+\_\+\+S\+R\+I\+\_\+type} \{ \hyperlink{namespaceenums_ad159a7d6539f111883db3b07c09601a8ad2c871b65148302b24a39fac6cedfd40}{enums\+::vol\+\_\+dev\+\_\+split} = 0, 
+\hyperlink{namespaceenums_ad159a7d6539f111883db3b07c09601a8a2754f7ec0e001029442600188c83d582}{enums\+::shear\+\_\+normal\+\_\+split} = 1
+ \}
+\end{DoxyCompactItemize}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$int dim$>$ }\\void \hyperlink{namespaceSRI_add98d0fc70a6c51803dfd8c491547413}{S\+R\+I\+::prepare\+\_\+sol\+Grads} (const unsigned int \hyperlink{assembly__routine__SRI_8cc_a0b72b2a33d52b7597b87df35b5b92415}{n\+\_\+q\+\_\+points\+\_\+\+RI}, F\+E\+Values$<$ dim $>$ \&fe\+\_\+values\+\_\+ref\+\_\+\+RI, const Vector$<$ double $>$ \&current\+\_\+solution, std\+::vector$<$ Tensor$<$ 2, dim $>$ $>$ \&solution\+\_\+grads\+\_\+u)
+\item 
+{\footnotesize template$<$int dim$>$ }\\void \hyperlink{namespaceSRI_a369a3f624dbb7fdc2106bcc520366d24}{S\+R\+I\+::prepare\+\_\+sol2\+\_\+sol\+Grads} (const unsigned int \hyperlink{assembly__routine__SRI_8cc_a0b72b2a33d52b7597b87df35b5b92415}{n\+\_\+q\+\_\+points\+\_\+\+RI}, F\+E\+Values$<$ dim $>$ \&fe\+\_\+values\+\_\+ref\+\_\+\+RI, const Vector$<$ double $>$ \&current\+\_\+solution, std\+::vector$<$ Tensor$<$ 2, dim $>$ $>$ \&solution\+\_\+grads\+\_\+u, std\+::vector$<$ double $>$ \&phi\+\_\+n1, std\+::vector$<$ Tensor$<$ 1, dim $>$ $>$ \&solution\+\_\+grads\+\_\+phi)
+\item 
+bool \hyperlink{namespaceSRI_a8403675a876445cd7f069cc73aa55d05}{S\+R\+I\+::assemble\+\_\+first\+\_\+part} (const unsigned int k, const unsigned int \hyperlink{assembly__routine__SRI_8cc_afd52b693751274175b93a58458201e6b}{n\+\_\+q\+\_\+points})
+\item 
+Symmetric\+Tensor$<$ 2, 3 $>$ \hyperlink{namespaceSRI_aa4f8e16d0494b0945d0eadb845367ab4}{S\+R\+I\+::get\+\_\+shear\+\_\+part} (const Symmetric\+Tensor$<$ 2, 3 $>$ \&Sym\+Ten)
+\item 
+Symmetric\+Tensor$<$ 4, 3 $>$ \hyperlink{namespaceSRI_a41e9c32e257c2d3d3ae337cd992658ee}{S\+R\+I\+::get\+\_\+shear\+\_\+part} (const Symmetric\+Tensor$<$ 4, 3 $>$ \&Sym\+Ten)
+\item 
+Symmetric\+Tensor$<$ 2, 3 $>$ \hyperlink{namespaceSRI_a6fddaa4232b80942ecf98d0d5bb69d83}{S\+R\+I\+::second\+\_\+part} (const Tensor$<$ 2, 3 $>$ \&F, const Symmetric\+Tensor$<$ 2, 3 $>$ \&stress\+\_\+S, \hyperlink{namespaceenums_ad159a7d6539f111883db3b07c09601a8}{enums\+::enum\+\_\+\+S\+R\+I\+\_\+type} \hyperlink{assembly__routine__SRI_8cc_a163566963ded80f68a5bbc6d04ce0adf}{S\+R\+I\+\_\+type})
+\item 
+Symmetric\+Tensor$<$ 2, 3 $>$ \hyperlink{namespaceSRI_a99b236a4dfdbad69d9bc9473d1110801}{S\+R\+I\+::first\+\_\+part} (const Tensor$<$ 2, 3 $>$ \&F, const Symmetric\+Tensor$<$ 2, 3 $>$ \&stress\+\_\+S, \hyperlink{namespaceenums_ad159a7d6539f111883db3b07c09601a8}{enums\+::enum\+\_\+\+S\+R\+I\+\_\+type} \hyperlink{assembly__routine__SRI_8cc_a163566963ded80f68a5bbc6d04ce0adf}{S\+R\+I\+\_\+type})
+\item 
+Symmetric\+Tensor$<$ 4, 3 $>$ \hyperlink{namespaceSRI_a59dcf1c9d3d602b0d3d3044c23cb2f10}{S\+R\+I\+::second\+\_\+part} (const Tensor$<$ 2, 3 $>$ \&F, const Symmetric\+Tensor$<$ 2, 3 $>$ \&stress\+\_\+S, const Symmetric\+Tensor$<$ 4, 3 $>$ \&Tangent, \hyperlink{namespaceenums_ad159a7d6539f111883db3b07c09601a8}{enums\+::enum\+\_\+\+S\+R\+I\+\_\+type} \hyperlink{assembly__routine__SRI_8cc_a163566963ded80f68a5bbc6d04ce0adf}{S\+R\+I\+\_\+type})
+\item 
+Symmetric\+Tensor$<$ 4, 3 $>$ \hyperlink{namespaceSRI_a7893737600c5ccd2b127e19c13a1d516}{S\+R\+I\+::first\+\_\+part} (const Tensor$<$ 2, 3 $>$ \&F, const Symmetric\+Tensor$<$ 2, 3 $>$ \&stress\+\_\+S, const Symmetric\+Tensor$<$ 4, 3 $>$ \&Tangent, \hyperlink{namespaceenums_ad159a7d6539f111883db3b07c09601a8}{enums\+::enum\+\_\+\+S\+R\+I\+\_\+type} \hyperlink{assembly__routine__SRI_8cc_a163566963ded80f68a5bbc6d04ce0adf}{S\+R\+I\+\_\+type})
+\item 
+{\footnotesize template$<$int dim$>$ }\\Symmetric\+Tensor$<$ 2, dim $>$ \hyperlink{namespaceSRI_a3d489ecd63fbd10aeb4a72281196baca}{S\+R\+I\+::part} (const Tensor$<$ 2, 3 $>$ \&F, const Symmetric\+Tensor$<$ 2, 3 $>$ \&stress\+\_\+S, \hyperlink{namespaceenums_ad159a7d6539f111883db3b07c09601a8}{enums\+::enum\+\_\+\+S\+R\+I\+\_\+type} \hyperlink{assembly__routine__SRI_8cc_a163566963ded80f68a5bbc6d04ce0adf}{S\+R\+I\+\_\+type}, const unsigned int k, const unsigned int \hyperlink{assembly__routine__SRI_8cc_afd52b693751274175b93a58458201e6b}{n\+\_\+q\+\_\+points})
+\item 
+{\footnotesize template$<$int dim$>$ }\\Symmetric\+Tensor$<$ 4, dim $>$ \hyperlink{namespaceSRI_a206b72c5652b68159cb0211c53bc9f5c}{S\+R\+I\+::part} (const Tensor$<$ 2, 3 $>$ \&F, const Symmetric\+Tensor$<$ 2, 3 $>$ \&stress\+\_\+S, const Symmetric\+Tensor$<$ 4, 3 $>$ \&Tangent, \hyperlink{namespaceenums_ad159a7d6539f111883db3b07c09601a8}{enums\+::enum\+\_\+\+S\+R\+I\+\_\+type} \hyperlink{assembly__routine__SRI_8cc_a163566963ded80f68a5bbc6d04ce0adf}{S\+R\+I\+\_\+type}, const unsigned int k, const unsigned int \hyperlink{assembly__routine__SRI_8cc_afd52b693751274175b93a58458201e6b}{n\+\_\+q\+\_\+points})
+\item 
+{\footnotesize template$<$int dim$>$ }\\void \hyperlink{namespaceSRI_a304be230ce6414b79b92c2921ad38524}{S\+R\+I\+::init\+\_\+fe\+\_\+k} (F\+E\+Values$<$ dim $>$ \&fe\+\_\+values\+\_\+first\+\_\+part, F\+E\+Values$<$ dim $>$ \&fe\+\_\+values\+\_\+second\+\_\+part, const unsigned int k, const unsigned int \hyperlink{assembly__routine__SRI_8cc_afd52b693751274175b93a58458201e6b}{n\+\_\+q\+\_\+points}, F\+E\+Values$<$ dim $>$ $\ast$(\&fe\+\_\+values\+\_\+part), unsigned int \&k\+\_\+rel)
+\end{DoxyCompactItemize}
+\subsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+enum \hyperlink{namespaceenums_ad159a7d6539f111883db3b07c09601a8}{enums\+::enum\+\_\+\+S\+R\+I\+\_\+type} \hyperlink{namespaceenums_aea86a2beeb3b43f96447126c7f5dd2f3}{enums\+::\+Solid}
+\end{DoxyCompactItemize}

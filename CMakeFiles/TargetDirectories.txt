@@ -1,0 +1,11 @@
+/home/johannes/DEALII/work environment/selective_reduced_integration_SRI-dealii/CMakeFiles/run.dir
+/home/johannes/DEALII/work environment/selective_reduced_integration_SRI-dealii/CMakeFiles/release.dir
+/home/johannes/DEALII/work environment/selective_reduced_integration_SRI-dealii/CMakeFiles/assembly_routine_SRI.dir
+/home/johannes/DEALII/work environment/selective_reduced_integration_SRI-dealii/CMakeFiles/debug.dir
+/home/johannes/DEALII/work environment/selective_reduced_integration_SRI-dealii/CMakeFiles/doc.dir
+/home/johannes/DEALII/work environment/selective_reduced_integration_SRI-dealii/CMakeFiles/runclean.dir
+/home/johannes/DEALII/work environment/selective_reduced_integration_SRI-dealii/CMakeFiles/rebuild_cache.dir
+/home/johannes/DEALII/work environment/selective_reduced_integration_SRI-dealii/CMakeFiles/distclean.dir
+/home/johannes/DEALII/work environment/selective_reduced_integration_SRI-dealii/CMakeFiles/strip_comments.dir
+/home/johannes/DEALII/work environment/selective_reduced_integration_SRI-dealii/CMakeFiles/info.dir
+/home/johannes/DEALII/work environment/selective_reduced_integration_SRI-dealii/CMakeFiles/edit_cache.dir

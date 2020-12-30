@@ -1,0 +1,274 @@
+Selective reduced integration (\hyperlink{namespaceSRI}{S\+RI}) in deal.\+II\begin{DoxyAuthor}{Author}
+jfriedlein
+\end{DoxyAuthor}
+\hypertarget{index_code}{}\section{The commented program}\label{index_code}
+
+\begin{DoxyCode}
+\end{DoxyCode}
+ Besides all your other includes, you now also include the \hyperlink{namespaceSRI}{S\+RI} file, for instance as follows\+: ~\newline
+Selective Reduced Integration (\hyperlink{namespaceSRI}{S\+RI}) 
+\begin{DoxyCode}
+\textcolor{preprocessor}{#include "../selective\_reduced\_integration\_SRI-dealii/SRI.h"}
+ 
+...
+\end{DoxyCode}
+ Then we go on and extent the deal.\+II typical main class, here named {\itshape \hyperlink{classSolid}{Solid}} 
+\begin{DoxyCode}
+\textcolor{keyword}{template} <\textcolor{keywordtype}{int} dim>
+\textcolor{keyword}{class }\hyperlink{classSolid}{Solid}
+\{
+    ...
+\end{DoxyCode}
+ Later we need certain values, e.\+g. the shape gradients for the displacement components, so we define the following extractor {\itshape u\+\_\+fe} 
+\begin{DoxyCode}
+\textcolor{keyword}{const} FEValuesExtractors::Vector \hyperlink{assembly__routine__SRI_8cc_ae50a49c136e49c33fcd5a555a00009dd}{u\_fe}; \textcolor{comment}{// extractor for the dim displacement components}
+\end{DoxyCode}
+ Here we delcare your typical Q\+Gauss quadrature rule {\itshape qf\+\_\+cell} for the integration over the cell. We add another Q\+Gauss rule named {\itshape qf\+\_\+cell\+\_\+\+RI}. that will describe the reduced integration (RI). Furthermore, it is nice to add the {\itshape n\+\_\+q\+\_\+points\+\_\+\+RI} that stores the number of Q\+Ps for the reduced integrations (for Q1\+SR elements that is always 1, but maybe you want to try Q2\+SR at some point) 
+\begin{DoxyCode}
+\textcolor{keyword}{const} QGauss<dim>                \hyperlink{assembly__routine__SRI_8cc_aaaceb34a5b42a4954b2e893607c1bdef}{qf\_cell};
+\textcolor{keyword}{const} QGauss<dim>                \hyperlink{assembly__routine__SRI_8cc_ab9727a7376e2656d3cd40c65ac7efb81}{qf\_cell\_RI};
+\textcolor{keyword}{const} \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int}               \hyperlink{assembly__routine__SRI_8cc_afd52b693751274175b93a58458201e6b}{n\_q\_points};
+\textcolor{keyword}{const} \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int}              \hyperlink{assembly__routine__SRI_8cc_a0b72b2a33d52b7597b87df35b5b92415}{n\_q\_points\_RI};
+\end{DoxyCode}
+ A flag to decide whether we want to use \hyperlink{namespaceSRI}{S\+RI} (actually I always use a parameter in the prm file to change element formulations) 
+\begin{DoxyCode}
+\textcolor{keyword}{const} \textcolor{keywordtype}{bool} \hyperlink{assembly__routine__SRI_8cc_a535468030220abae9305a26e9d7f7401}{SRI\_active} = \textcolor{keyword}{true};
+\end{DoxyCode}
+ You can decide whether you want to do a volumetric-\/deviatoric split \char`\"{}vol\+\_\+dev\+\_\+split\char`\"{} to alleviate volumetric locking or a shear-\/normal split \char`\"{}shear\+\_\+normal\+\_\+split\char`\"{} to counteract shear locking. For this an enumerator was declared inside the function in the namespace {\itshape enums} 
+\begin{DoxyCode}
+     \hyperlink{namespaceenums_ad159a7d6539f111883db3b07c09601a8}{enums::enum\_SRI\_type} \hyperlink{assembly__routine__SRI_8cc_a163566963ded80f68a5bbc6d04ce0adf}{SRI\_type} = 
+      \hyperlink{namespaceenums_ad159a7d6539f111883db3b07c09601a8ad2c871b65148302b24a39fac6cedfd40}{enums::vol\_dev\_split};
+ 
+     ...
+\}
+\end{DoxyCode}
+ Constructor 
+\begin{DoxyCode}
+\textcolor{keyword}{template} <\textcolor{keywordtype}{int} dim>
+\hyperlink{assembly__routine__SRI_8cc_a031582e4b219de9cc57c78ebd20a2fc3}{Solid<dim>::Solid}( ... )
+:
+...
+\end{DoxyCode}
+ Here we choose a standard {\itshape F\+E\+\_\+Q} (just so you know) 
+\begin{DoxyCode}
+fe( FE\_Q<dim>(degree), dim),    \textcolor{comment}{// displacement}
+\hyperlink{assembly__routine__SRI_8cc_ae50a49c136e49c33fcd5a555a00009dd}{u\_fe}(0),
+\end{DoxyCode}
+ In the constructor for the above main class, we now also have to initialise the new variables, which we do as follows 
+\begin{DoxyCode}
+\hyperlink{assembly__routine__SRI_8cc_aaaceb34a5b42a4954b2e893607c1bdef}{qf\_cell}( degree +1 )
+\hyperlink{assembly__routine__SRI_8cc_ab9727a7376e2656d3cd40c65ac7efb81}{qf\_cell\_RI}( degree +1 -1 ),
+\hyperlink{assembly__routine__SRI_8cc_afd52b693751274175b93a58458201e6b}{n\_q\_points} (\hyperlink{assembly__routine__SRI_8cc_aaaceb34a5b42a4954b2e893607c1bdef}{qf\_cell}.size()),
+\hyperlink{assembly__routine__SRI_8cc_a0b72b2a33d52b7597b87df35b5b92415}{n\_q\_points\_RI} ( \hyperlink{assembly__routine__SRI_8cc_a535468030220abae9305a26e9d7f7401}{SRI\_active} ? (\hyperlink{assembly__routine__SRI_8cc_ab9727a7376e2656d3cd40c65ac7efb81}{qf\_cell\_RI}.size()) : 0 ),
+...
+\{
+\}
+\end{DoxyCode}
+ Assemble one-\/field finite strain over material configuration ~\newline
+We emphasis the relevant changes in the comment by a leading \mbox{[}\hyperlink{namespaceSRI}{S\+RI}\mbox{]} 
+\begin{DoxyCode}
+\textcolor{keyword}{template} <\textcolor{keywordtype}{int} dim>
+\textcolor{keywordtype}{void} \hyperlink{classSolid}{Solid<dim>::assemble\_system\_fstrain}( \textcolor{comment}{/*output-> tangent\_matrix,
+       system\_rhs*/} )
+\{
+\end{DoxyCode}
+ F\+E\+Values and Face\+Values to compute quantities on quadrature points for our finite element space including mapping from the real cell. There are no requirements on this {\itshape }  and  for \hyperlink{namespaceSRI}{S\+RI}, so you can keep your standard code for these. 
+\begin{DoxyCode}
+FEValues<dim> fe\_values\_ref (  fe,\textcolor{comment}{//The used FiniteElement}
+                               \hyperlink{assembly__routine__SRI_8cc_aaaceb34a5b42a4954b2e893607c1bdef}{qf\_cell},\textcolor{comment}{//The quadrature rule for the cell}
+                               update\_values| \textcolor{comment}{//UpdateFlag for shape function values}
+                               update\_gradients| \textcolor{comment}{//shape function gradients}
+                               update\_JxW\_values|  \textcolor{comment}{//transformed quadrature weights multiplied with
+       Jacobian of transformation}
+                               update\_quadrature\_points );
+
+FEFaceValues<dim> fe\_face\_values\_ref ( fe,
+                                       qf\_face, \textcolor{comment}{//The quadrature for face quadrature points}
+                                       update\_values|
+                                       update\_gradients|
+                                       update\_normal\_vectors| \textcolor{comment}{//compute normal vector for face}
+                                       update\_JxW\_values|
+                                       update\_quadrature\_points|
+                                       update\_jacobians );
+\end{DoxyCode}
+ \mbox{[}\hyperlink{namespaceSRI}{S\+RI}\mbox{]} In addition for S\+R\+Is we define the reduced integration rule 
+\begin{DoxyCode}
+FEValues<dim> fe\_values\_ref\_RI (   fe,\textcolor{comment}{//The used FiniteElement}
+                                   \hyperlink{assembly__routine__SRI_8cc_ab9727a7376e2656d3cd40c65ac7efb81}{qf\_cell\_RI},\textcolor{comment}{//The quadrature rule for the cell}
+                                   update\_values | \textcolor{comment}{//UpdateFlag for shape function values}
+                                   update\_gradients | \textcolor{comment}{//shape function gradients}
+                                   update\_JxW\_values );  \textcolor{comment}{//transformed quadrature weights multiplied with
+       Jacobian of transformation}
+\end{DoxyCode}
+ Quantities to store the local rhs and matrix contribution 
+\begin{DoxyCode}
+FullMatrix<double> cell\_matrix(dofs\_per\_cell,dofs\_per\_cell);
+Vector<double> cell\_rhs (dofs\_per\_cell);
+\end{DoxyCode}
+ Vector with the indices (global) of the local dofs 
+\begin{DoxyCode}
+std::vector<types::global\_dof\_index> local\_dof\_indices (dofs\_per\_cell);
+\end{DoxyCode}
+ Compute the current, total solution, i.\+e. starting value of current load step and current solution\+\_\+delta 
+\begin{DoxyCode}
+Vector<double> current\_solution = get\_total\_solution(this->solution\_delta);
+\end{DoxyCode}
+ Tangents class and Tangent members 
+\begin{DoxyCode}
+Tangent\_groups\_u<dim> Tangents;
+SymmetricTensor<4,dim> Tangent;
+SymmetricTensor<2,dim> Tangent\_theta;
+\end{DoxyCode}
+ Iterators to loop over all active cells 
+\begin{DoxyCode}
+ \textcolor{keyword}{typename} DoFHandler<dim>::active\_cell\_iterator cell = dof\_handler\_ref.begin\_active(),
+                                                endc = dof\_handler\_ref.end();
+
+\textcolor{keywordflow}{for}(;cell!=endc;++cell)
+\{
+\end{DoxyCode}
+ Reset the local rhs and matrix for every cell 
+\begin{DoxyCode}
+cell\_matrix=0.0;
+cell\_rhs=0.0;
+\end{DoxyCode}
+ Reinit the F\+E\+Values instance for the current cell, i.\+e. compute the values for the current cell 
+\begin{DoxyCode}
+fe\_values\_ref.reinit(cell);
+\end{DoxyCode}
+ \mbox{[}\hyperlink{namespaceSRI}{S\+RI}\mbox{]} Also reinit the RI rule for \hyperlink{namespaceSRI}{S\+RI} 
+\begin{DoxyCode}
+\textcolor{keywordflow}{if} ( \hyperlink{assembly__routine__SRI_8cc_a535468030220abae9305a26e9d7f7401}{SRI\_active} )
+   fe\_values\_ref\_RI.reinit(cell);
+\end{DoxyCode}
+ Vector to store the gradients of the solution at n\+\_\+q\+\_\+points quadrature points 
+\begin{DoxyCode}
+std::vector<Tensor<2,dim> > solution\_grads\_u(\hyperlink{assembly__routine__SRI_8cc_afd52b693751274175b93a58458201e6b}{n\_q\_points});
+\end{DoxyCode}
+ Fill the previous vector using get\+\_\+function\+\_\+gradients 
+\begin{DoxyCode}
+fe\_values\_ref[\hyperlink{assembly__routine__SRI_8cc_ae50a49c136e49c33fcd5a555a00009dd}{u\_fe}].get\_function\_gradients(current\_solution,solution\_grads\_u);
+\end{DoxyCode}
+ \mbox{[}\hyperlink{namespaceSRI}{S\+RI}\mbox{]} Prepare the solutions gradients for the RI rule. Herein we extend the given vector of solution gradients by the additional gradients at the reduced integration quadrature points. 
+\begin{DoxyCode}
+\textcolor{keywordflow}{if} ( \hyperlink{assembly__routine__SRI_8cc_a535468030220abae9305a26e9d7f7401}{SRI\_active} )
+    \hyperlink{namespaceSRI_add98d0fc70a6c51803dfd8c491547413}{SRI::prepare\_solGrads}( \hyperlink{assembly__routine__SRI_8cc_a0b72b2a33d52b7597b87df35b5b92415}{n\_q\_points\_RI}, fe\_values\_ref\_RI, 
+      current\_solution, solution\_grads\_u );
+\end{DoxyCode}
+ \mbox{[}\hyperlink{namespaceSRI}{S\+RI}\mbox{]} k\+\_\+rel is the relative qp-\/counter used for everything related to F\+E\+Values objects and needed for \hyperlink{namespaceSRI}{S\+RI} 
+\begin{DoxyCode}
+\textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} k\_rel = 0;
+\end{DoxyCode}
+ Write the global indices of the local dofs of the current cell 
+\begin{DoxyCode}
+cell->get\_dof\_indices(local\_dof\_indices);
+\end{DoxyCode}
+ Get the Q\+PH for the Q\+Ps of the current cell, all stored in one vector of pointers 
+\begin{DoxyCode}
+\textcolor{keyword}{const} std::vector< std::shared\_ptr< PointHistory<dim> > > lqph = quadrature\_point\_history.get\_data(cell);
+\end{DoxyCode}
+ \mbox{[}\hyperlink{namespaceSRI}{S\+RI}\mbox{]} Loop over all quadrature points of the cell ~\newline
+For \hyperlink{namespaceSRI}{S\+RI} the variable {\itshape n\+\_\+q\+\_\+points\+\_\+\+RI} contains the number of Q\+Ps for reduced integration over which we also loop. Else (FuI, RI, Fbar) this number is zero, so we don\textquotesingle{}t loop over these additional Q\+Ps 
+\begin{DoxyCode}
+\textcolor{keywordflow}{for}( \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} k=0; k < (\hyperlink{assembly__routine__SRI_8cc_afd52b693751274175b93a58458201e6b}{n\_q\_points}+\hyperlink{assembly__routine__SRI_8cc_a0b72b2a33d52b7597b87df35b5b92415}{n\_q\_points\_RI}); ++k )
+\{
+\end{DoxyCode}
+ Compute the deformation gradient from the solution gradients. Note that the vector of solutions gradients has been, in case of \hyperlink{namespaceSRI}{S\+RI}, been extended by the values at the RI Q\+Ps, so we have to use the full QP counter {\itshape k}. \begin{DoxyNote}{Note}
+If you want to work with 2D or even axisymmetry, you would need to modify the deformation gradient now and cross some more t\textquotesingle{}s (see \href{https://github.com/jfriedlein/2D_axial-symmetry_plane-strain_dealii}{\tt https\+://github.\+com/jfriedlein/2\+D\+\_\+axial-\/symmetry\+\_\+plane-\/strain\+\_\+dealii}).
+\end{DoxyNote}
+
+\begin{DoxyCode}
+Tensor<2,dim> DeformationGradient = (Tensor<2, dim>(StandardTensors::I<dim>()) + solution\_grads\_u[k]);
+\end{DoxyCode}
+ \mbox{[}\hyperlink{namespaceSRI}{S\+RI}\mbox{]} \hyperlink{namespaceSRI}{S\+RI} (does no harm to the remaining E\+L\+F\+O\+R\+Ms) ~\newline
+We initalise the {\itshape fe\+\_\+values\+\_\+part} pointer with the currently needed F\+E\+Values quantity. For the first {\itshape n\+\_\+q\+\_\+points} quadrature points we assign the standard {\itshape fe\+\_\+values\+\_\+ref} and in the remaining {\itshape n\+\_\+q\+\_\+points\+\_\+\+RI} we use the {\itshape fe\+\_\+values\+\_\+ref\+\_\+\+RI} for the reduced integration 
+\begin{DoxyCode}
+FEValues<dim> *fe\_values\_part = \textcolor{keyword}{nullptr};
+\hyperlink{namespaceSRI_a304be230ce6414b79b92c2921ad38524}{SRI::init\_fe\_k}( \textcolor{comment}{/*input->*/} fe\_values\_ref, fe\_values\_ref\_RI, k, 
+      \hyperlink{assembly__routine__SRI_8cc_afd52b693751274175b93a58458201e6b}{n\_q\_points},
+                \textcolor{comment}{/*output->*/} fe\_values\_part, k\_rel );
+\end{DoxyCode}
+ \mbox{[}\hyperlink{namespaceSRI}{S\+RI}\mbox{]} We declare $\ast$\+\_\+part variables for the stress and the tangent, that eiter contain the deviatoric or volumetric parts 
+\begin{DoxyCode}
+SymmetricTensor<2,dim> stress\_part;
+SymmetricTensor<4,dim> Tangent\_part;
+\end{DoxyCode}
+ The material model will still return the full stress and tangents, because we call it with the standard deformation gradient. Thus, we also create the full stress and tangent as tensor. (There is certainly a more efficient way to do this.) 
+\begin{DoxyCode}
+SymmetricTensor<2,dim> stress\_S;
+SymmetricTensor<4,dim> dS\_dC;
+\end{DoxyCode}
+ Now you have to call your material model with the deformation gradient and whatever else, to get your stress and tangent. The following is just a dummy and far from my actual code. 
+\begin{DoxyCode}
+elastoplasticity( DeformationGradient, lqph[k], stress\_S, dS\_dC );
+\end{DoxyCode}
+ \mbox{[}\hyperlink{namespaceSRI}{S\+RI}\mbox{]} Extract the desired parts from the stress and tangent, in case we use \hyperlink{namespaceSRI}{S\+RI}. Depending on the {\itshape S\+R\+I\+\_\+type}, we now do either a volumetric-\/deviatoric split or a trivial normal-\/shear split. 
+\begin{DoxyCode}
+\textcolor{keywordflow}{if} ( \hyperlink{assembly__routine__SRI_8cc_a535468030220abae9305a26e9d7f7401}{SRI\_active} )
+\{
+   stress\_part = SRI::part<dim>( DeformationGradient, stress\_S, SRi\_type, k, 
+      \hyperlink{assembly__routine__SRI_8cc_afd52b693751274175b93a58458201e6b}{n\_q\_points} );
+   Tangent\_part = SRI::part<dim>( DeformationGradient, stress\_S, dS\_dC, \hyperlink{assembly__routine__SRI_8cc_a163566963ded80f68a5bbc6d04ce0adf}{SRI\_type}, k, 
+      \hyperlink{assembly__routine__SRI_8cc_afd52b693751274175b93a58458201e6b}{n\_q\_points} );
+\}
+\end{DoxyCode}
+ For full integration, we just copy the full tensors into the $\ast$\+\_\+part variables 
+\begin{DoxyCode}
+\textcolor{keywordflow}{else}
+\{
+   stress\_part = stress\_S;
+   Tangent\_part = dS\_dC;
+\}
+\end{DoxyCode}
+ \mbox{[}\hyperlink{namespaceSRI}{S\+RI}\mbox{]} The quadrature weight for the current quadrature point. That seems to be a daily task, but due to the variable F\+E\+Values element you have to use the general $\ast$\+\_\+part variable and the relative QP counter {\itshape k\+\_\+rel} 
+\begin{DoxyCode}
+\textcolor{keyword}{const} \textcolor{keywordtype}{double} JxW = (*fe\_values\_part).JxW(k\_rel);
+\end{DoxyCode}
+ Loop over all dof\textquotesingle{}s of the cell 
+\begin{DoxyCode}
+\textcolor{keywordflow}{for}(\textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} i=0; i < dofs\_per\_cell; ++i)
+\{
+\end{DoxyCode}
+ \mbox{[}\hyperlink{namespaceSRI}{S\+RI}\mbox{]} Assemble system\+\_\+rhs contribution Here we also access the F\+E\+Values, so we replace this by the \+\_\+part counterpart together with {\itshape k-\/rel} 
+\begin{DoxyCode}
+Tensor<2,dim> grad\_X\_N\_u\_i = (*fe\_values\_part)[\hyperlink{assembly__routine__SRI_8cc_ae50a49c136e49c33fcd5a555a00009dd}{u\_fe}].gradient(i,k\_rel);
+\end{DoxyCode}
+ \mbox{[}\hyperlink{namespaceSRI}{S\+RI}\mbox{]} The standard residual as shown on Git\+Hub. Note that this is exactly the same as without \hyperlink{namespaceSRI}{S\+RI}, only that we replace the P\+K2 stress by the stress part  that either contains the volumetric or deviatoric stress (or normal-\/shear) 
+\begin{DoxyCode}
+cell\_rhs(i) -= ( symmetrize( transpose(DeformationGradient) * grad\_X\_N\_u\_i ) * stress\_part ) * JxW;
+
+\textcolor{keywordflow}{for}(\textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} j=0; j<dofs\_per\_cell; ++j)
+\{
+\end{DoxyCode}
+ \mbox{[}\hyperlink{namespaceSRI}{S\+RI}\mbox{]} Assemble tangent contribution 
+\begin{DoxyCode}
+Tensor<2,dim> grad\_X\_N\_u\_j = (*fe\_values\_part)[\hyperlink{assembly__routine__SRI_8cc_ae50a49c136e49c33fcd5a555a00009dd}{u\_fe}].gradient(j,k\_rel);
+\end{DoxyCode}
+ The linearisation of the right Cauchy-\/\+Green tensor (You will recall this line when you take a closer look at the F-\/bar formulation) 
+\begin{DoxyCode}
+SymmetricTensor<2,dim> deltaRCG = 2. * symmetrize( transpose(grad\_X\_N\_u\_j) * DeformationGradient );
+\end{DoxyCode}
+ Again, the only difference to the standard integration, is that we replace the stress and now also the tangent by the $\ast$\+\_\+part counterparts. That\textquotesingle{}s it! 
+\begin{DoxyCode}
+            cell\_matrix(i,j) += (
+                                    symmetrize( transpose(grad\_X\_N\_u\_i) * grad\_X\_N\_u\_j ) * stress\_part
+                                    +
+                                    symmetrize( transpose(DeformationGradient) * grad\_X\_N\_u\_i )
+                                      ( Tangent\_part * deltaRCG )
+                                )
+                                  JxW;
+        \} \textcolor{comment}{// end for(j)}
+     \} \textcolor{comment}{// end for(i)}
+\} \textcolor{comment}{// end for(k)}
+\end{DoxyCode}
+ Copy local to global\+: 
+\begin{DoxyCode}
+        constraints.distribute\_local\_to\_global(cell\_matrix,cell\_rhs,
+                                local\_dof\_indices,
+                                tangent\_matrix,system\_rhs,\textcolor{keyword}{false});
+    \} \textcolor{comment}{// end for(cell)}
+\} \textcolor{comment}{// end assemble\_system}
+\end{DoxyCode}
+\hypertarget{index_END}{}\section{The End}\label{index_END}
+Hosted via Git\+Hub according to \href{https://goseeky.wordpress.com/2017/07/22/documentation-101-doxygen-with-github-pages/}{\tt https\+://goseeky.\+wordpress.\+com/2017/07/22/documentation-\/101-\/doxygen-\/with-\/github-\/pages/} ~\newline
+Design of the documentation inspired by the deal.\+ii tutorial programs. 

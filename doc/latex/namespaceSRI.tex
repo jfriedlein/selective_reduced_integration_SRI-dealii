@@ -1,0 +1,225 @@
+\hypertarget{namespaceSRI}{}\section{S\+RI Namespace Reference}
+\label{namespaceSRI}\index{S\+RI@{S\+RI}}
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$int dim$>$ }\\void \hyperlink{namespaceSRI_add98d0fc70a6c51803dfd8c491547413}{prepare\+\_\+sol\+Grads} (const unsigned int \hyperlink{assembly__routine__SRI_8cc_a0b72b2a33d52b7597b87df35b5b92415}{n\+\_\+q\+\_\+points\+\_\+\+RI}, F\+E\+Values$<$ dim $>$ \&fe\+\_\+values\+\_\+ref\+\_\+\+RI, const Vector$<$ double $>$ \&current\+\_\+solution, std\+::vector$<$ Tensor$<$ 2, dim $>$ $>$ \&solution\+\_\+grads\+\_\+u)
+\item 
+{\footnotesize template$<$int dim$>$ }\\void \hyperlink{namespaceSRI_a369a3f624dbb7fdc2106bcc520366d24}{prepare\+\_\+sol2\+\_\+sol\+Grads} (const unsigned int \hyperlink{assembly__routine__SRI_8cc_a0b72b2a33d52b7597b87df35b5b92415}{n\+\_\+q\+\_\+points\+\_\+\+RI}, F\+E\+Values$<$ dim $>$ \&fe\+\_\+values\+\_\+ref\+\_\+\+RI, const Vector$<$ double $>$ \&current\+\_\+solution, std\+::vector$<$ Tensor$<$ 2, dim $>$ $>$ \&solution\+\_\+grads\+\_\+u, std\+::vector$<$ double $>$ \&phi\+\_\+n1, std\+::vector$<$ Tensor$<$ 1, dim $>$ $>$ \&solution\+\_\+grads\+\_\+phi)
+\item 
+bool \hyperlink{namespaceSRI_a8403675a876445cd7f069cc73aa55d05}{assemble\+\_\+first\+\_\+part} (const unsigned int k, const unsigned int \hyperlink{assembly__routine__SRI_8cc_afd52b693751274175b93a58458201e6b}{n\+\_\+q\+\_\+points})
+\item 
+Symmetric\+Tensor$<$ 2, 3 $>$ \hyperlink{namespaceSRI_aa4f8e16d0494b0945d0eadb845367ab4}{get\+\_\+shear\+\_\+part} (const Symmetric\+Tensor$<$ 2, 3 $>$ \&Sym\+Ten)
+\item 
+Symmetric\+Tensor$<$ 4, 3 $>$ \hyperlink{namespaceSRI_a41e9c32e257c2d3d3ae337cd992658ee}{get\+\_\+shear\+\_\+part} (const Symmetric\+Tensor$<$ 4, 3 $>$ \&Sym\+Ten)
+\item 
+Symmetric\+Tensor$<$ 2, 3 $>$ \hyperlink{namespaceSRI_a6fddaa4232b80942ecf98d0d5bb69d83}{second\+\_\+part} (const Tensor$<$ 2, 3 $>$ \&F, const Symmetric\+Tensor$<$ 2, 3 $>$ \&stress\+\_\+S, \hyperlink{namespaceenums_ad159a7d6539f111883db3b07c09601a8}{enums\+::enum\+\_\+\+S\+R\+I\+\_\+type} \hyperlink{assembly__routine__SRI_8cc_a163566963ded80f68a5bbc6d04ce0adf}{S\+R\+I\+\_\+type})
+\item 
+Symmetric\+Tensor$<$ 2, 3 $>$ \hyperlink{namespaceSRI_a99b236a4dfdbad69d9bc9473d1110801}{first\+\_\+part} (const Tensor$<$ 2, 3 $>$ \&F, const Symmetric\+Tensor$<$ 2, 3 $>$ \&stress\+\_\+S, \hyperlink{namespaceenums_ad159a7d6539f111883db3b07c09601a8}{enums\+::enum\+\_\+\+S\+R\+I\+\_\+type} \hyperlink{assembly__routine__SRI_8cc_a163566963ded80f68a5bbc6d04ce0adf}{S\+R\+I\+\_\+type})
+\item 
+Symmetric\+Tensor$<$ 4, 3 $>$ \hyperlink{namespaceSRI_a59dcf1c9d3d602b0d3d3044c23cb2f10}{second\+\_\+part} (const Tensor$<$ 2, 3 $>$ \&F, const Symmetric\+Tensor$<$ 2, 3 $>$ \&stress\+\_\+S, const Symmetric\+Tensor$<$ 4, 3 $>$ \&Tangent, \hyperlink{namespaceenums_ad159a7d6539f111883db3b07c09601a8}{enums\+::enum\+\_\+\+S\+R\+I\+\_\+type} \hyperlink{assembly__routine__SRI_8cc_a163566963ded80f68a5bbc6d04ce0adf}{S\+R\+I\+\_\+type})
+\item 
+Symmetric\+Tensor$<$ 4, 3 $>$ \hyperlink{namespaceSRI_a7893737600c5ccd2b127e19c13a1d516}{first\+\_\+part} (const Tensor$<$ 2, 3 $>$ \&F, const Symmetric\+Tensor$<$ 2, 3 $>$ \&stress\+\_\+S, const Symmetric\+Tensor$<$ 4, 3 $>$ \&Tangent, \hyperlink{namespaceenums_ad159a7d6539f111883db3b07c09601a8}{enums\+::enum\+\_\+\+S\+R\+I\+\_\+type} \hyperlink{assembly__routine__SRI_8cc_a163566963ded80f68a5bbc6d04ce0adf}{S\+R\+I\+\_\+type})
+\item 
+{\footnotesize template$<$int dim$>$ }\\Symmetric\+Tensor$<$ 2, dim $>$ \hyperlink{namespaceSRI_a3d489ecd63fbd10aeb4a72281196baca}{part} (const Tensor$<$ 2, 3 $>$ \&F, const Symmetric\+Tensor$<$ 2, 3 $>$ \&stress\+\_\+S, \hyperlink{namespaceenums_ad159a7d6539f111883db3b07c09601a8}{enums\+::enum\+\_\+\+S\+R\+I\+\_\+type} \hyperlink{assembly__routine__SRI_8cc_a163566963ded80f68a5bbc6d04ce0adf}{S\+R\+I\+\_\+type}, const unsigned int k, const unsigned int \hyperlink{assembly__routine__SRI_8cc_afd52b693751274175b93a58458201e6b}{n\+\_\+q\+\_\+points})
+\item 
+{\footnotesize template$<$int dim$>$ }\\Symmetric\+Tensor$<$ 4, dim $>$ \hyperlink{namespaceSRI_a206b72c5652b68159cb0211c53bc9f5c}{part} (const Tensor$<$ 2, 3 $>$ \&F, const Symmetric\+Tensor$<$ 2, 3 $>$ \&stress\+\_\+S, const Symmetric\+Tensor$<$ 4, 3 $>$ \&Tangent, \hyperlink{namespaceenums_ad159a7d6539f111883db3b07c09601a8}{enums\+::enum\+\_\+\+S\+R\+I\+\_\+type} \hyperlink{assembly__routine__SRI_8cc_a163566963ded80f68a5bbc6d04ce0adf}{S\+R\+I\+\_\+type}, const unsigned int k, const unsigned int \hyperlink{assembly__routine__SRI_8cc_afd52b693751274175b93a58458201e6b}{n\+\_\+q\+\_\+points})
+\item 
+{\footnotesize template$<$int dim$>$ }\\void \hyperlink{namespaceSRI_a304be230ce6414b79b92c2921ad38524}{init\+\_\+fe\+\_\+k} (F\+E\+Values$<$ dim $>$ \&fe\+\_\+values\+\_\+first\+\_\+part, F\+E\+Values$<$ dim $>$ \&fe\+\_\+values\+\_\+second\+\_\+part, const unsigned int k, const unsigned int \hyperlink{assembly__routine__SRI_8cc_afd52b693751274175b93a58458201e6b}{n\+\_\+q\+\_\+points}, F\+E\+Values$<$ dim $>$ $\ast$(\&fe\+\_\+values\+\_\+part), unsigned int \&k\+\_\+rel)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Namespace summarising function for selective reduced integration (\hyperlink{namespaceSRI}{S\+RI})
+\begin{DoxyItemize}
+\item vol-\/dev split\+: RI for volumetric part and FuI for deviatoric part
+\item shear-\/normal split\+: RI for shear part (shear-\/locking) and FuI for normal part 
+\end{DoxyItemize}
+
+\subsection{Function Documentation}
+\index{S\+RI@{S\+RI}!assemble\+\_\+first\+\_\+part@{assemble\+\_\+first\+\_\+part}}
+\index{assemble\+\_\+first\+\_\+part@{assemble\+\_\+first\+\_\+part}!S\+RI@{S\+RI}}
+\subsubsection[{\texorpdfstring{assemble\+\_\+first\+\_\+part(const unsigned int k, const unsigned int n\+\_\+q\+\_\+points)}{assemble_first_part(const unsigned int k, const unsigned int n_q_points)}}]{\setlength{\rightskip}{0pt plus 5cm}bool S\+R\+I\+::assemble\+\_\+first\+\_\+part (
+\begin{DoxyParamCaption}
+\item[{const unsigned int}]{k, }
+\item[{const unsigned int}]{n\+\_\+q\+\_\+points}
+\end{DoxyParamCaption}
+)}\hypertarget{namespaceSRI_a8403675a876445cd7f069cc73aa55d05}{}\label{namespaceSRI_a8403675a876445cd7f069cc73aa55d05}
+Return whether we currently shall assemble the first part (k$<$n\+\_\+q\+\_\+points) or whether we already did that and now will assemble the reduced integrated quadrature points. 
+
+Definition at line 82 of file S\+R\+I.\+h.
+
+\index{S\+RI@{S\+RI}!first\+\_\+part@{first\+\_\+part}}
+\index{first\+\_\+part@{first\+\_\+part}!S\+RI@{S\+RI}}
+\subsubsection[{\texorpdfstring{first\+\_\+part(const Tensor$<$ 2, 3 $>$ \&\+F, const Symmetric\+Tensor$<$ 2, 3 $>$ \&stress\+\_\+\+S, enums\+::enum\+\_\+\+S\+R\+I\+\_\+type S\+R\+I\+\_\+type)}{first_part(const Tensor< 2, 3 > &F, const SymmetricTensor< 2, 3 > &stress_S, enums::enum_SRI_type SRI_type)}}]{\setlength{\rightskip}{0pt plus 5cm}Symmetric\+Tensor$<$2,3$>$ S\+R\+I\+::first\+\_\+part (
+\begin{DoxyParamCaption}
+\item[{const Tensor$<$ 2, 3 $>$ \&}]{F, }
+\item[{const Symmetric\+Tensor$<$ 2, 3 $>$ \&}]{stress\+\_\+S, }
+\item[{{\bf enums\+::enum\+\_\+\+S\+R\+I\+\_\+type}}]{S\+R\+I\+\_\+type}
+\end{DoxyParamCaption}
+)}\hypertarget{namespaceSRI_a99b236a4dfdbad69d9bc9473d1110801}{}\label{namespaceSRI_a99b236a4dfdbad69d9bc9473d1110801}
+Return the first stress part (either deviatoric or shear stress) as the difference between the total stress and the second part 
+
+Definition at line 139 of file S\+R\+I.\+h.
+
+\index{S\+RI@{S\+RI}!first\+\_\+part@{first\+\_\+part}}
+\index{first\+\_\+part@{first\+\_\+part}!S\+RI@{S\+RI}}
+\subsubsection[{\texorpdfstring{first\+\_\+part(const Tensor$<$ 2, 3 $>$ \&\+F, const Symmetric\+Tensor$<$ 2, 3 $>$ \&stress\+\_\+\+S, const Symmetric\+Tensor$<$ 4, 3 $>$ \&\+Tangent, enums\+::enum\+\_\+\+S\+R\+I\+\_\+type S\+R\+I\+\_\+type)}{first_part(const Tensor< 2, 3 > &F, const SymmetricTensor< 2, 3 > &stress_S, const SymmetricTensor< 4, 3 > &Tangent, enums::enum_SRI_type SRI_type)}}]{\setlength{\rightskip}{0pt plus 5cm}Symmetric\+Tensor$<$4,3$>$ S\+R\+I\+::first\+\_\+part (
+\begin{DoxyParamCaption}
+\item[{const Tensor$<$ 2, 3 $>$ \&}]{F, }
+\item[{const Symmetric\+Tensor$<$ 2, 3 $>$ \&}]{stress\+\_\+S, }
+\item[{const Symmetric\+Tensor$<$ 4, 3 $>$ \&}]{Tangent, }
+\item[{{\bf enums\+::enum\+\_\+\+S\+R\+I\+\_\+type}}]{S\+R\+I\+\_\+type}
+\end{DoxyParamCaption}
+)}\hypertarget{namespaceSRI_a7893737600c5ccd2b127e19c13a1d516}{}\label{namespaceSRI_a7893737600c5ccd2b127e19c13a1d516}
+Return the first tangent part 
+
+Definition at line 162 of file S\+R\+I.\+h.
+
+\index{S\+RI@{S\+RI}!get\+\_\+shear\+\_\+part@{get\+\_\+shear\+\_\+part}}
+\index{get\+\_\+shear\+\_\+part@{get\+\_\+shear\+\_\+part}!S\+RI@{S\+RI}}
+\subsubsection[{\texorpdfstring{get\+\_\+shear\+\_\+part(const Symmetric\+Tensor$<$ 2, 3 $>$ \&\+Sym\+Ten)}{get_shear_part(const SymmetricTensor< 2, 3 > &SymTen)}}]{\setlength{\rightskip}{0pt plus 5cm}Symmetric\+Tensor$<$2,3$>$ S\+R\+I\+::get\+\_\+shear\+\_\+part (
+\begin{DoxyParamCaption}
+\item[{const Symmetric\+Tensor$<$ 2, 3 $>$ \&}]{Sym\+Ten}
+\end{DoxyParamCaption}
+)}\hypertarget{namespaceSRI_aa4f8e16d0494b0945d0eadb845367ab4}{}\label{namespaceSRI_aa4f8e16d0494b0945d0eadb845367ab4}
+Return the normal stress as a tensor with zero shear stresses 
+
+Definition at line 93 of file S\+R\+I.\+h.
+
+\index{S\+RI@{S\+RI}!get\+\_\+shear\+\_\+part@{get\+\_\+shear\+\_\+part}}
+\index{get\+\_\+shear\+\_\+part@{get\+\_\+shear\+\_\+part}!S\+RI@{S\+RI}}
+\subsubsection[{\texorpdfstring{get\+\_\+shear\+\_\+part(const Symmetric\+Tensor$<$ 4, 3 $>$ \&\+Sym\+Ten)}{get_shear_part(const SymmetricTensor< 4, 3 > &SymTen)}}]{\setlength{\rightskip}{0pt plus 5cm}Symmetric\+Tensor$<$4,3$>$ S\+R\+I\+::get\+\_\+shear\+\_\+part (
+\begin{DoxyParamCaption}
+\item[{const Symmetric\+Tensor$<$ 4, 3 $>$ \&}]{Sym\+Ten}
+\end{DoxyParamCaption}
+)}\hypertarget{namespaceSRI_a41e9c32e257c2d3d3ae337cd992658ee}{}\label{namespaceSRI_a41e9c32e257c2d3d3ae337cd992658ee}
+Return the Tangent that corresponds to a stress tensor with only normal stresses 
+
+Definition at line 107 of file S\+R\+I.\+h.
+
+\index{S\+RI@{S\+RI}!init\+\_\+fe\+\_\+k@{init\+\_\+fe\+\_\+k}}
+\index{init\+\_\+fe\+\_\+k@{init\+\_\+fe\+\_\+k}!S\+RI@{S\+RI}}
+\subsubsection[{\texorpdfstring{init\+\_\+fe\+\_\+k(\+F\+E\+Values$<$ dim $>$ \&fe\+\_\+values\+\_\+first\+\_\+part, F\+E\+Values$<$ dim $>$ \&fe\+\_\+values\+\_\+second\+\_\+part, const unsigned int k, const unsigned int n\+\_\+q\+\_\+points, F\+E\+Values$<$ dim $>$ $\ast$(\&fe\+\_\+values\+\_\+part), unsigned int \&k\+\_\+rel)}{init_fe_k(FEValues< dim > &fe_values_first_part, FEValues< dim > &fe_values_second_part, const unsigned int k, const unsigned int n_q_points, FEValues< dim > *(&fe_values_part), unsigned int &k_rel)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$int dim$>$ void S\+R\+I\+::init\+\_\+fe\+\_\+k (
+\begin{DoxyParamCaption}
+\item[{F\+E\+Values$<$ dim $>$ \&}]{fe\+\_\+values\+\_\+first\+\_\+part, }
+\item[{F\+E\+Values$<$ dim $>$ \&}]{fe\+\_\+values\+\_\+second\+\_\+part, }
+\item[{const unsigned int}]{k, }
+\item[{const unsigned int}]{n\+\_\+q\+\_\+points, }
+\item[{F\+E\+Values$<$ dim $>$ $\ast$\&}]{fe\+\_\+values\+\_\+part, }
+\item[{unsigned int \&}]{k\+\_\+rel}
+\end{DoxyParamCaption}
+)}\hypertarget{namespaceSRI_a304be230ce6414b79b92c2921ad38524}{}\label{namespaceSRI_a304be230ce6414b79b92c2921ad38524}
+The output {\itshape fe\+\_\+values\+\_\+part} is a pointer to a reference (?) \begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000003}{Todo}]Find a better way, in case there is one. \end{DoxyRefDesc}
+
+
+Definition at line 201 of file S\+R\+I.\+h.
+
+\index{S\+RI@{S\+RI}!part@{part}}
+\index{part@{part}!S\+RI@{S\+RI}}
+\subsubsection[{\texorpdfstring{part(const Tensor$<$ 2, 3 $>$ \&\+F, const Symmetric\+Tensor$<$ 2, 3 $>$ \&stress\+\_\+\+S, enums\+::enum\+\_\+\+S\+R\+I\+\_\+type S\+R\+I\+\_\+type, const unsigned int k, const unsigned int n\+\_\+q\+\_\+points)}{part(const Tensor< 2, 3 > &F, const SymmetricTensor< 2, 3 > &stress_S, enums::enum_SRI_type SRI_type, const unsigned int k, const unsigned int n_q_points)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$int dim$>$ Symmetric\+Tensor$<$2,dim$>$ S\+R\+I\+::part (
+\begin{DoxyParamCaption}
+\item[{const Tensor$<$ 2, 3 $>$ \&}]{F, }
+\item[{const Symmetric\+Tensor$<$ 2, 3 $>$ \&}]{stress\+\_\+S, }
+\item[{{\bf enums\+::enum\+\_\+\+S\+R\+I\+\_\+type}}]{S\+R\+I\+\_\+type, }
+\item[{const unsigned int}]{k, }
+\item[{const unsigned int}]{n\+\_\+q\+\_\+points}
+\end{DoxyParamCaption}
+)}\hypertarget{namespaceSRI_a3d489ecd63fbd10aeb4a72281196baca}{}\label{namespaceSRI_a3d489ecd63fbd10aeb4a72281196baca}
+Return the stress part defined by the input arguments {\itshape k} and {\itshape n\+\_\+q\+\_\+points} 
+
+Definition at line 172 of file S\+R\+I.\+h.
+
+\index{S\+RI@{S\+RI}!part@{part}}
+\index{part@{part}!S\+RI@{S\+RI}}
+\subsubsection[{\texorpdfstring{part(const Tensor$<$ 2, 3 $>$ \&\+F, const Symmetric\+Tensor$<$ 2, 3 $>$ \&stress\+\_\+\+S, const Symmetric\+Tensor$<$ 4, 3 $>$ \&\+Tangent, enums\+::enum\+\_\+\+S\+R\+I\+\_\+type S\+R\+I\+\_\+type, const unsigned int k, const unsigned int n\+\_\+q\+\_\+points)}{part(const Tensor< 2, 3 > &F, const SymmetricTensor< 2, 3 > &stress_S, const SymmetricTensor< 4, 3 > &Tangent, enums::enum_SRI_type SRI_type, const unsigned int k, const unsigned int n_q_points)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$int dim$>$ Symmetric\+Tensor$<$4,dim$>$ S\+R\+I\+::part (
+\begin{DoxyParamCaption}
+\item[{const Tensor$<$ 2, 3 $>$ \&}]{F, }
+\item[{const Symmetric\+Tensor$<$ 2, 3 $>$ \&}]{stress\+\_\+S, }
+\item[{const Symmetric\+Tensor$<$ 4, 3 $>$ \&}]{Tangent, }
+\item[{{\bf enums\+::enum\+\_\+\+S\+R\+I\+\_\+type}}]{S\+R\+I\+\_\+type, }
+\item[{const unsigned int}]{k, }
+\item[{const unsigned int}]{n\+\_\+q\+\_\+points}
+\end{DoxyParamCaption}
+)}\hypertarget{namespaceSRI_a206b72c5652b68159cb0211c53bc9f5c}{}\label{namespaceSRI_a206b72c5652b68159cb0211c53bc9f5c}
+Return the tangent part defined by the input arguments {\itshape k} and {\itshape n\+\_\+q\+\_\+points} 
+
+Definition at line 186 of file S\+R\+I.\+h.
+
+\index{S\+RI@{S\+RI}!prepare\+\_\+sol2\+\_\+sol\+Grads@{prepare\+\_\+sol2\+\_\+sol\+Grads}}
+\index{prepare\+\_\+sol2\+\_\+sol\+Grads@{prepare\+\_\+sol2\+\_\+sol\+Grads}!S\+RI@{S\+RI}}
+\subsubsection[{\texorpdfstring{prepare\+\_\+sol2\+\_\+sol\+Grads(const unsigned int n\+\_\+q\+\_\+points\+\_\+\+R\+I, F\+E\+Values$<$ dim $>$ \&fe\+\_\+values\+\_\+ref\+\_\+\+R\+I, const Vector$<$ double $>$ \&current\+\_\+solution, std\+::vector$<$ Tensor$<$ 2, dim $>$ $>$ \&solution\+\_\+grads\+\_\+u, std\+::vector$<$ double $>$ \&phi\+\_\+n1, std\+::vector$<$ Tensor$<$ 1, dim $>$ $>$ \&solution\+\_\+grads\+\_\+phi)}{prepare_sol2_solGrads(const unsigned int n_q_points_RI, FEValues< dim > &fe_values_ref_RI, const Vector< double > &current_solution, std::vector< Tensor< 2, dim > > &solution_grads_u, std::vector< double > &phi_n1, std::vector< Tensor< 1, dim > > &solution_grads_phi)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$int dim$>$ void S\+R\+I\+::prepare\+\_\+sol2\+\_\+sol\+Grads (
+\begin{DoxyParamCaption}
+\item[{const unsigned int}]{n\+\_\+q\+\_\+points\+\_\+\+RI, }
+\item[{F\+E\+Values$<$ dim $>$ \&}]{fe\+\_\+values\+\_\+ref\+\_\+\+RI, }
+\item[{const Vector$<$ double $>$ \&}]{current\+\_\+solution, }
+\item[{std\+::vector$<$ Tensor$<$ 2, dim $>$ $>$ \&}]{solution\+\_\+grads\+\_\+u, }
+\item[{std\+::vector$<$ double $>$ \&}]{phi\+\_\+n1, }
+\item[{std\+::vector$<$ Tensor$<$ 1, dim $>$ $>$ \&}]{solution\+\_\+grads\+\_\+phi}
+\end{DoxyParamCaption}
+)}\hypertarget{namespaceSRI_a369a3f624dbb7fdc2106bcc520366d24}{}\label{namespaceSRI_a369a3f624dbb7fdc2106bcc520366d24}
+Prepare the solutions gradients and the scalar field for a two-\/field problem 
+\begin{DoxyParams}{Parameters}
+{\em n\+\_\+q\+\_\+points\+\_\+\+RI} & \\
+\hline
+{\em fe\+\_\+values\+\_\+ref\+\_\+\+RI} & \\
+\hline
+{\em current\+\_\+solution} & \\
+\hline
+{\em solution\+\_\+grads\+\_\+u} & \\
+\hline
+{\em phi\+\_\+n1} & \\
+\hline
+{\em solution\+\_\+grads\+\_\+phi} & \\
+\hline
+\end{DoxyParams}
+
+
+Definition at line 60 of file S\+R\+I.\+h.
+
+\index{S\+RI@{S\+RI}!prepare\+\_\+sol\+Grads@{prepare\+\_\+sol\+Grads}}
+\index{prepare\+\_\+sol\+Grads@{prepare\+\_\+sol\+Grads}!S\+RI@{S\+RI}}
+\subsubsection[{\texorpdfstring{prepare\+\_\+sol\+Grads(const unsigned int n\+\_\+q\+\_\+points\+\_\+\+R\+I, F\+E\+Values$<$ dim $>$ \&fe\+\_\+values\+\_\+ref\+\_\+\+R\+I, const Vector$<$ double $>$ \&current\+\_\+solution, std\+::vector$<$ Tensor$<$ 2, dim $>$ $>$ \&solution\+\_\+grads\+\_\+u)}{prepare_solGrads(const unsigned int n_q_points_RI, FEValues< dim > &fe_values_ref_RI, const Vector< double > &current_solution, std::vector< Tensor< 2, dim > > &solution_grads_u)}}]{\setlength{\rightskip}{0pt plus 5cm}template$<$int dim$>$ void S\+R\+I\+::prepare\+\_\+sol\+Grads (
+\begin{DoxyParamCaption}
+\item[{const unsigned int}]{n\+\_\+q\+\_\+points\+\_\+\+RI, }
+\item[{F\+E\+Values$<$ dim $>$ \&}]{fe\+\_\+values\+\_\+ref\+\_\+\+RI, }
+\item[{const Vector$<$ double $>$ \&}]{current\+\_\+solution, }
+\item[{std\+::vector$<$ Tensor$<$ 2, dim $>$ $>$ \&}]{solution\+\_\+grads\+\_\+u}
+\end{DoxyParamCaption}
+)}\hypertarget{namespaceSRI_add98d0fc70a6c51803dfd8c491547413}{}\label{namespaceSRI_add98d0fc70a6c51803dfd8c491547413}
+For \hyperlink{namespaceSRI}{S\+RI} we append the solution\+\_\+grads by the gradient at the reduced integrated quadrature points Afterwards the size of the {\itshape solution\+\_\+grad\+\_\+u} vector is (n\+\_\+q\+\_\+points+n\+\_\+q\+\_\+points\+\_\+\+RI). \begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000001}{Todo}]\+: avoid using the F\+Eextractor maybe use fe\+\_\+values\mbox{[}u\+\_\+fe\mbox{]} as input \end{DoxyRefDesc}
+
+
+Definition at line 40 of file S\+R\+I.\+h.
+
+\index{S\+RI@{S\+RI}!second\+\_\+part@{second\+\_\+part}}
+\index{second\+\_\+part@{second\+\_\+part}!S\+RI@{S\+RI}}
+\subsubsection[{\texorpdfstring{second\+\_\+part(const Tensor$<$ 2, 3 $>$ \&\+F, const Symmetric\+Tensor$<$ 2, 3 $>$ \&stress\+\_\+\+S, enums\+::enum\+\_\+\+S\+R\+I\+\_\+type S\+R\+I\+\_\+type)}{second_part(const Tensor< 2, 3 > &F, const SymmetricTensor< 2, 3 > &stress_S, enums::enum_SRI_type SRI_type)}}]{\setlength{\rightskip}{0pt plus 5cm}Symmetric\+Tensor$<$2,3$>$ S\+R\+I\+::second\+\_\+part (
+\begin{DoxyParamCaption}
+\item[{const Tensor$<$ 2, 3 $>$ \&}]{F, }
+\item[{const Symmetric\+Tensor$<$ 2, 3 $>$ \&}]{stress\+\_\+S, }
+\item[{{\bf enums\+::enum\+\_\+\+S\+R\+I\+\_\+type}}]{S\+R\+I\+\_\+type}
+\end{DoxyParamCaption}
+)}\hypertarget{namespaceSRI_a6fddaa4232b80942ecf98d0d5bb69d83}{}\label{namespaceSRI_a6fddaa4232b80942ecf98d0d5bb69d83}
+Return the second stress part (either volumetric or normal stress) \begin{DoxyRefDesc}{Todo}
+\item[\hyperlink{todo__todo000002}{Todo}]Catch not implemented S\+R\+I\+\_\+type in a more general location \end{DoxyRefDesc}
+
+
+Definition at line 124 of file S\+R\+I.\+h.
+
+\index{S\+RI@{S\+RI}!second\+\_\+part@{second\+\_\+part}}
+\index{second\+\_\+part@{second\+\_\+part}!S\+RI@{S\+RI}}
+\subsubsection[{\texorpdfstring{second\+\_\+part(const Tensor$<$ 2, 3 $>$ \&\+F, const Symmetric\+Tensor$<$ 2, 3 $>$ \&stress\+\_\+\+S, const Symmetric\+Tensor$<$ 4, 3 $>$ \&\+Tangent, enums\+::enum\+\_\+\+S\+R\+I\+\_\+type S\+R\+I\+\_\+type)}{second_part(const Tensor< 2, 3 > &F, const SymmetricTensor< 2, 3 > &stress_S, const SymmetricTensor< 4, 3 > &Tangent, enums::enum_SRI_type SRI_type)}}]{\setlength{\rightskip}{0pt plus 5cm}Symmetric\+Tensor$<$4,3$>$ S\+R\+I\+::second\+\_\+part (
+\begin{DoxyParamCaption}
+\item[{const Tensor$<$ 2, 3 $>$ \&}]{F, }
+\item[{const Symmetric\+Tensor$<$ 2, 3 $>$ \&}]{stress\+\_\+S, }
+\item[{const Symmetric\+Tensor$<$ 4, 3 $>$ \&}]{Tangent, }
+\item[{{\bf enums\+::enum\+\_\+\+S\+R\+I\+\_\+type}}]{S\+R\+I\+\_\+type}
+\end{DoxyParamCaption}
+)}\hypertarget{namespaceSRI_a59dcf1c9d3d602b0d3d3044c23cb2f10}{}\label{namespaceSRI_a59dcf1c9d3d602b0d3d3044c23cb2f10}
+Return the second tangent part 
+
+Definition at line 148 of file S\+R\+I.\+h.
+
