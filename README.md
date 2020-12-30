@@ -15,7 +15,7 @@ Furthermore, it is efficient and based on my current experience faster than an F
 ## Background
 In 3D for instance, linear elements possess 8 quadrature points (QPs, grey "X" in the following figure). We use the quantities from these standard 8 QPs for the assembly of the deviatoric or normal part of the residual and thus also the tangent. Additionally, we loop over a 9th QP (red "X") which is in the center of the Q1 element. The information from the 9th QP is used to assemble the volumetric or shear part. The center values are "locking-free" and the gradients there exhibit the highest accuracy (superconvergent property).
 
-<img src="https://github.com/jfriedlein/selective_reduced_integration_SRI-dealii/blob/main/images/Q1SR%20-%203D%20element.png" width="500">
+<img src="https://github.com/jfriedlein/selective_reduced_integration_SRI-dealii/blob/main/images/Q1SR%20-%203D%20element.png" width="250">
 
 Also take note that you could use SRI for higher-order elements as well, which is supported by the code in this repository.
 
@@ -61,9 +61,15 @@ In case you have a one-field problem (displacements) your residual might be rath
 
 <img src="https://github.com/jfriedlein/selective_reduced_integration_SRI-dealii/blob/main/images/residual_tangent%20-%20standard.png" width="500">
 
-Then you can dig right into the following details on the implementation. If your residual is more involved, you might firstly take a piece of paper and take a closer look at your residual. SRI wants the deviatoric stress (and tangent) at the standard quadrature points for the residual and adds the missing volumetric stress onto the residual via the center QP. If your residual possesses additional terms that are stress dependent or independent, you know have to decide which parts to integrate fully, integrate by reduced integrations or integrate using all 9 QPs. At best you start with one of the options and see how it goes. This playing around with the residual is one of the things you don't need to do for an F-bar formulation.  
+for the dof `i` using the deformation gradient F, the shape function N, the PK2 stress S and the right Cauchy-Green tensor C. It is written as implemented in deal.II not following continuum mechanics conventions.
+
+Then you can dig right into the following details on the implementation. If your residual is more involved, you might firstly take a piece of paper and take a closer look at your residual. SRI wants the deviatoric stress (and tangent) at the standard quadrature points for the residual and adds the missing volumetric stress onto the residual via the center QP.
 
 <img src="https://github.com/jfriedlein/selective_reduced_integration_SRI-dealii/blob/main/images/residual%20-%20quadrature.png" width="500">
+
+When comparing the fully integrated "FuI" residual in the above equations with the SRI counterpart, we see that the first part containing the deviatoric stress (superscirpt "dev")  is integrated using the standard Gauss quadrature with number n_qp of quadrature points. The second part is identical besides using the volumetric stress (superscript "vol") and only using the reduced number of QPs. The tangent would look accordingly. In fact, the implementation of the (this standard) residual is identical to the fully integrated variant, as you will see in the implementation below.
+
+If your residual possesses additional terms that are stress dependent or independent, you know have to decide which parts to integrate fully, integrate by reduced integrations or integrate using all 9 QPs. At best you start with one of the options and see how it goes. This playing around with the residual is one of the things you don't need to do for an F-bar formulation.  
 
 1. Declarations
 In your main class (in deal.II it is named for instance "step3" [deal.II step3 tutorial](https://www.dealii.org/current/doxygen/deal.II/step_3.html) where you delcare your typical QGauss quadrature rule `qf_cell` for the integration over the cell, add another QGauss rule named `qf_cell_RI`. The latter will describe the reduced integration (RI). Furthermore, it is nice to add the `n_q_points_RI` that stores the number of QPs for the reduced integrations (for Q1SR elements that is always 1, but maybe you want to try Q2SR at some point)
