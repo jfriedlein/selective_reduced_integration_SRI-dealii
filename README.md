@@ -94,9 +94,7 @@ In the constructor for the above main class, we now also have to  initialise the
 The standard `qf_cell` is initialised as usual, where `degree` denotes the polynomial order that is used for the element (1: linear element, 2: quadratic element, ...). The reduced integration uses one order less, so we init the `qf_cell_RI` with the order of `qf_cell` minus 1. The number of quadrature point for RI is set to its standard value `qf_cell_RI.size())` in case we want to use SRI (boolean flag `SRI_active` is true, else we set this number to zero.
 
 3. Assembly routine
-Now the difficult part begins, we extent the assembly routine to be able to use SRI (and still keep the option for standard integration).
-
-@ todo add a mainpage with the assembly routine and the comments
+Now the difficult part begins, we extent the assembly routine to be able to use SRI (and still keep the option for standard integration). You can find the commented code for an exemplary assembly routine with SRI here: https://jfriedlein.github.io/selective_reduced_integration_SRI-dealii/
 
 Again, I want to remind you that you think about the correct use of `*fe_values_part` and `k_rel`.The often go along with each other, e.g. in the gradients, so at best check each occurence of the standard `fe_values_ref` and the original `k`. (I emphasise this, because I extended several assembly routines by SRI and that is my most common mistake, even though I created this code itself.)
 
