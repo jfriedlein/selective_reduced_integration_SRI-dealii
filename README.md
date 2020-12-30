@@ -13,9 +13,11 @@ Selective reduced integration is one of the easier ways to alleviate volumetric 
 Furthermore, it is efficient and based on my current experience faster than an F-bar formulation (code see [F-bar element formulation](https://github.com/jfriedlein/F-bar_element_formulation-dealii)).
 
 ## Background
-In 3D for instance, linear elements possess 8 quadrature points (QPs). We use the quantities from these standard 8 QPs for the assembly of the deviatoric or normal part of the residual and thus also the tangent. Additionally, we loop over a 9th QP which is in the center of the Q1 element. The information from the 9th QP is used to assemble the volumetric or shear part. The center values are "locking-free" and the gradients there exhibit the highest accuracy (superconvergent property). Also take note that you could use SRI for higher-order elements as well, which is supported by the code in this repository.
+In 3D for instance, linear elements possess 8 quadrature points (QPs, grey "X" in the following figure). We use the quantities from these standard 8 QPs for the assembly of the deviatoric or normal part of the residual and thus also the tangent. Additionally, we loop over a 9th QP (red "X") which is in the center of the Q1 element. The information from the 9th QP is used to assemble the volumetric or shear part. The center values are "locking-free" and the gradients there exhibit the highest accuracy (superconvergent property).
 
-@todo Add some graphics
+<img src="https://github.com/jfriedlein/selective_reduced_integration_SRI-dealii/blob/main/images/Q1SR%20-%203D%20element.png" width="500">
+
+Also take note that you could use SRI for higher-order elements as well, which is supported by the code in this repository.
 
 Volumetric Locking
 - https://www.brown.edu/Departments/Engineering/Courses/En2340/Notes/2017/L9.pdf
@@ -57,8 +59,11 @@ In case you have a one-field problem (displacements) your residual might be rath
 
 @todo Add equation for standard residual with deformation gradient, shape function gradient and PK2 stress
 
+<img src="https://github.com/jfriedlein/selective_reduced_integration_SRI-dealii/blob/main/images/residual_tangent%20-%20standard.png" width="500">
+
 Then you can dig right into the following details on the implementation. If your residual is more involved, you might firstly take a piece of paper and take a closer look at your residual. SRI wants the deviatoric stress (and tangent) at the standard quadrature points for the residual and adds the missing volumetric stress onto the residual via the center QP. If your residual possesses additional terms that are stress dependent or independent, you know have to decide which parts to integrate fully, integrate by reduced integrations or integrate using all 9 QPs. At best you start with one of the options and see how it goes. This playing around with the residual is one of the things you don't need to do for an F-bar formulation.  
 
+<img src="https://github.com/jfriedlein/selective_reduced_integration_SRI-dealii/blob/main/images/residual%20-%20quadrature.png" width="500">
 
 1. Declarations
 In your main class (in deal.II it is named for instance "step3" [deal.II step3 tutorial](https://www.dealii.org/current/doxygen/deal.II/step_3.html) where you delcare your typical QGauss quadrature rule `qf_cell` for the integration over the cell, add another QGauss rule named `qf_cell_RI`. The latter will describe the reduced integration (RI). Furthermore, it is nice to add the `n_q_points_RI` that stores the number of QPs for the reduced integrations (for Q1SR elements that is always 1, but maybe you want to try Q2SR at some point)
