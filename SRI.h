@@ -12,7 +12,11 @@ using namespace dealii;
 
 namespace enums
 {
-	// ToDo-optimize: rename "Newton_Raphson", because we always solve via NR, but once we use disp- or force-control ("regular") and once AL
+	/**
+	* @note Why do we name it vol-dev and shear-normal? Even though shear-normal
+	* sounds unusual it makes more sense here, because the first name always describes
+	* the part that causes problems (locks) and thus needs to be integrated with a reduced order.
+	*/
     enum enum_SRI_type
 	 {
 		vol_dev_split = 0,
@@ -27,6 +31,49 @@ namespace enums
  */
 namespace SRI
 {
+	/**
+	 * For SRI we append the solution_grads by the gradient at the reduced integrated quadrature points
+	 * Afterwards the size of the \a solution_grad_u vector is (n_q_points+n_q_points_RI).
+	 * @todo: avoid using the FEextractor maybe use fe_values[u_fe] as input
+	 */
+	template<int dim>
+	void prepare_solGrads ( const unsigned int n_q_points_RI, FEValues<dim> &fe_values_ref_RI,
+							const Vector<double> &current_solution, std::vector< Tensor<2,dim> > &solution_grads_u )
+	 {
+		// We evaluate the gradients also at the RI quadrature points ...
+		 std::vector< Tensor<2,dim> > solution_grads_u_RI(n_q_points_RI);
+		 fe_values_ref_RI[(FEValuesExtractors::Vector) 0].get_function_gradients(current_solution,solution_grads_u_RI);
+		// ... and append the existing vector of gradients by the additional gradients
+		 solution_grads_u.insert(solution_grads_u.end(), solution_grads_u_RI.begin(), solution_grads_u_RI.end());
+	 }
+
+	/**
+	 * Prepare the solutions gradients and the scalar field for a two-field problem
+	 * @param n_q_points_RI
+	 * @param fe_values_ref_RI
+	 * @param current_solution
+	 * @param solution_grads_u
+	 * @param phi_n1
+	 * @param solution_grads_phi
+	 */
+	template<int dim>
+	void prepare_sol2_solGrads ( const unsigned int n_q_points_RI, FEValues<dim> &fe_values_ref_RI,
+								 const Vector<double> &current_solution, std::vector< Tensor<2,dim> > &solution_grads_u,
+								 std::vector<double> &phi_n1, std::vector<Tensor<1,dim> > &solution_grads_phi )
+	{
+		std::vector< double > phi_n1_RI ( n_q_points_RI );
+		fe_values_ref_RI[(FEValuesExtractors::Scalar) dim].get_function_values(current_solution, phi_n1_RI);
+		phi_n1.insert(phi_n1.end(), phi_n1_RI.begin(), phi_n1_RI.end());
+
+		std::vector< Tensor<2,dim> > solution_grads_u_RI(n_q_points_RI);
+		fe_values_ref_RI[(FEValuesExtractors::Vector) 0].get_function_gradients(current_solution,solution_grads_u_RI);
+		solution_grads_u.insert(solution_grads_u.end(), solution_grads_u_RI.begin(), solution_grads_u_RI.end());
+
+		std::vector<Tensor<1,dim> > solution_grads_phi_RI(n_q_points_RI);
+		fe_values_ref_RI[(FEValuesExtractors::Scalar) dim].get_function_gradients(current_solution, solution_grads_phi_RI);
+		solution_grads_phi.insert(solution_grads_phi.end(), solution_grads_phi_RI.begin(), solution_grads_phi_RI.end());
+	 }
+
 	/**
 	 * Return whether we currently shall assemble the first part (k<n_q_points)
 	 * or whether we already did that and now will assemble the reduced integrated
@@ -43,13 +90,12 @@ namespace SRI
 	/**
 	 * Return the normal stress as a tensor with zero shear stresses
 	 */
-	template <int dim>
-	SymmetricTensor<2,dim> get_shear_part( const SymmetricTensor<2,dim> &SymTen )
+	SymmetricTensor<2,3> get_shear_part( const SymmetricTensor<2,3> &SymTen )
 	{
-		SymmetricTensor<2,dim> shear_part (SymTen);
+		SymmetricTensor<2,3> shear_part (SymTen);
 		// Loop over the diagonal (normal) entries and set them to zero.
 		// The remaining shear entries are unchanged from the above initialisation.
-		for ( unsigned m=0; m<dim ; m++ )
+		for ( unsigned m=0; m<3 ; m++ )
 			shear_part[m][m] = 0;
 		return shear_part;
 	}
@@ -58,15 +104,14 @@ namespace SRI
 	/**
 	 * Return the Tangent that corresponds to a stress tensor with only normal stresses
 	 */
-	template <int dim>
-	SymmetricTensor<4,dim> get_shear_part( const SymmetricTensor<4,dim> &SymTen )
+	SymmetricTensor<4,3> get_shear_part( const SymmetricTensor<4,3> &SymTen )
 	{
-		SymmetricTensor<4,dim> shear_part (SymTen);
+		SymmetricTensor<4,3> shear_part (SymTen);
 		// Loop over the normal stress entries (first two indices [m][m] and
 		// set all below entries [o][p] to zero for these related normal stresses
-		for ( unsigned m=0; m<dim ; m++ )
-			for ( unsigned o=0; o<dim ; o++ )
-				for ( unsigned p=0; p<dim ; p++ )
+		for ( unsigned m=0; m<3 ; m++ )
+			for ( unsigned o=0; o<3 ; o++ )
+				for ( unsigned p=0; p<3 ; p++ )
 					shear_part[m][m][o][p] = 0;
 		return shear_part;
 	}
@@ -76,8 +121,7 @@ namespace SRI
 	 * Return the second stress part (either volumetric or normal stress)
 	 * @todo Catch not implemented SRI_type in a more general location
 	 */
-	template <int dim>
-	SymmetricTensor<2,dim> second_part ( const Tensor<2,dim> &F, const SymmetricTensor<2,dim> &stress_S, enums::enum_SRI_type SRI_type )
+	SymmetricTensor<2,3> second_part ( const Tensor<2,3> &F, const SymmetricTensor<2,3> &stress_S, enums::enum_SRI_type SRI_type )
 	{
 		if ( SRI_type == enums::vol_dev_split )
 			return NLKM::get_stress_S_vol(F, stress_S);
@@ -92,8 +136,7 @@ namespace SRI
 	 * Return the first stress part (either deviatoric or shear stress) as the
 	 * difference between the total stress and the second part
 	 */
-	template <int dim>
-	SymmetricTensor<2,dim> first_part ( const Tensor<2,dim> &F, const SymmetricTensor<2,dim> &stress_S, enums::enum_SRI_type SRI_type )
+	SymmetricTensor<2,3> first_part ( const Tensor<2,3> &F, const SymmetricTensor<2,3> &stress_S, enums::enum_SRI_type SRI_type )
 	{
 			return stress_S - second_part( F, stress_S, SRI_type );
 	}
@@ -102,8 +145,7 @@ namespace SRI
 	/**
 	 * Return the second tangent part
 	 */
-	template <int dim>
-	SymmetricTensor<4,dim> second_part ( const Tensor<2,dim> &F, const SymmetricTensor<2,dim> &stress_S, const SymmetricTensor<4,dim> &Tangent, enums::enum_SRI_type SRI_type )
+	SymmetricTensor<4,3> second_part ( const Tensor<2,3> &F, const SymmetricTensor<2,3> &stress_S, const SymmetricTensor<4,3> &Tangent, enums::enum_SRI_type SRI_type )
 	{
 		if ( SRI_type == enums::vol_dev_split )
 			return NLKM::get_dKxS_dC( F, stress_S, Tangent);
@@ -117,8 +159,7 @@ namespace SRI
 	/**
 	 * Return the first tangent part
 	 */
-	template <int dim>
-	SymmetricTensor<4,dim> first_part ( const Tensor<2,dim> &F, const SymmetricTensor<2,dim> &stress_S, const SymmetricTensor<4,dim> &Tangent, enums::enum_SRI_type SRI_type )
+	SymmetricTensor<4,3> first_part ( const Tensor<2,3> &F, const SymmetricTensor<2,3> &stress_S, const SymmetricTensor<4,3> &Tangent, enums::enum_SRI_type SRI_type )
 	{
 			return Tangent - second_part( F, stress_S, Tangent, SRI_type );
 	}
@@ -128,13 +169,13 @@ namespace SRI
 	 * Return the stress part defined by the input arguments \a k and \a n_q_points
 	 */
 	template <int dim>
-	SymmetricTensor<2,dim> part ( const Tensor<2,dim> &F, const SymmetricTensor<2,dim> &stress_S,
+	SymmetricTensor<2,dim> part ( const Tensor<2,3> &F, const SymmetricTensor<2,3> &stress_S,
 								  enums::enum_SRI_type SRI_type, const unsigned int k, const unsigned int n_q_points )
 	{
 		if ( assemble_first_part(k,n_q_points) ) // first
-			return first_part( F, stress_S, SRI_type );
+			return extract_dim<dim>( first_part( F, stress_S, SRI_type ) );
 		else
-			return second_part( F, stress_S, SRI_type );
+			return extract_dim<dim>( second_part( F, stress_S, SRI_type ) );
 	}
 	
 	
@@ -142,13 +183,13 @@ namespace SRI
 	 * Return the tangent part defined by the input arguments \a k and \a n_q_points
 	 */
 	template <int dim>
-	SymmetricTensor<4,dim> part ( const Tensor<2,dim> &F, const SymmetricTensor<2,dim> &stress_S, const SymmetricTensor<4,dim> &Tangent,
+	SymmetricTensor<4,dim> part ( const Tensor<2,3> &F, const SymmetricTensor<2,3> &stress_S, const SymmetricTensor<4,3> &Tangent,
 										enums::enum_SRI_type SRI_type, const unsigned int k, const unsigned int n_q_points )
 	{
 		if ( assemble_first_part(k,n_q_points) ) // first
-			return first_part( F, stress_S, Tangent, SRI_type );
+			return extract_dim<dim>( first_part( F, stress_S, Tangent, SRI_type ) );
 		else
-			return second_part( F, stress_S, Tangent, SRI_type );
+			return extract_dim<dim>( second_part( F, stress_S, Tangent, SRI_type ) );
 	}
 	
 
