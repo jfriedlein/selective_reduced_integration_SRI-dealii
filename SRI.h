@@ -28,6 +28,7 @@ namespace enums
  * Namespace summarising function for selective reduced integration (SRI)
  * - vol-dev split: RI for volumetric part and FuI for deviatoric part
  * - shear-normal split: RI for shear part (shear-locking) and FuI for normal part
+ * @todo-optimize Check use of equation (11) from [https://journals.pan.pl/Content/84498/PDF/04_paper.pdf] by  SUCHOCKI
  */
 namespace SRI
 {

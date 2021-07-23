@@ -10,6 +10,12 @@ using namespace dealii;
 
 namespace NLKM
 {
+	/**
+	 * Rename this fnc, because it can also be used for others tensors besides the stress
+	 * @param F
+	 * @param stress_S
+	 * @return
+	 */
 	template <int dim>
 	SymmetricTensor<2,dim> get_stress_S_vol( const Tensor<2,dim> &F, const SymmetricTensor<2,dim> &stress_S )
 	{
