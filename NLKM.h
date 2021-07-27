@@ -34,15 +34,39 @@ namespace NLKM
 	 * @return
 	 */
 	template <int dim>
-	SymmetricTensor<4,dim> get_dKxS_dC( const Tensor<2,dim> &F, const SymmetricTensor<2,dim> &stress_S, const SymmetricTensor<4,dim> &Tangent )
+	SymmetricTensor<4,dim> get_dKxS_dC( const Tensor<2,dim> &F, const SymmetricTensor<2,dim> &stress_S, const SymmetricTensor<4,dim> &dS_dC )
 	{
 		SymmetricTensor<2,dim> RCG_C = symmetrize( transpose(F)*F );
 		SymmetricTensor<2,dim> RCGinv_Cinv = invert(RCG_C);
 		//SymmetricTensor<4,dim> K = 1./3. * outer_product( RCGinv_Cinv, RCG_C );
 		return 1./3. * (
-						  outer_product( RCGinv_Cinv, ( RCG_C * Tangent + stress_S*identity_tensor<dim>()) )
+						  outer_product( RCGinv_Cinv, ( RCG_C * dS_dC + stress_S*identity_tensor<dim>()) )
 						  + (RCG_C*stress_S) * Physics::Elasticity::StandardTensors<dim>::dC_inv_dC(F)
 					   );
+	}
+	// @todo-optimize Improve this routine, maybe use above results for dS_dC
+	template <int dim>
+	Tensor<4,dim> get_dKxS_dF( const Tensor<2,dim> &F, const SymmetricTensor<2,dim> &stress_S, const Tensor<4,dim> &dS_dF )
+	{
+		SymmetricTensor<2,dim> RCG_C = symmetrize( transpose(F)*F );
+		SymmetricTensor<2,dim> RCGinv_Cinv = invert(RCG_C);
+		Tensor<2,dim> F_inv = invert(F);
+		Tensor<4,dim> d_Finv_dF = StandardTensors::dFinv_dF( F_inv, true );
+		Tensor<4,dim> d_FT_inv_d_F = StandardTensors::dFTinv_dF( F );
+		SymmetricTensor<4,dim> K = 1./3. * outer_product( RCGinv_Cinv, RCG_C );
+
+ 		return 1./3. * (
+ 							//( contract<1,0>( d_Finv_dF, transpose(F_inv) ) + F_inv * d_FT_inv_d_F ) * (RCG_C*stress_S)
+ 						    ( RCG_C*stress_S ) *
+ 							double_contract<2,0,3,1>( Tensor<4,dim>(Physics::Elasticity::StandardTensors<dim>::dC_inv_dC(F)),
+ 													  StandardTensors::dC_dF(F))
+							+
+							double_contract<2,0,3,1> (
+														Tensor<4,dim> (outer_product( RCGinv_Cinv, stress_S )) ,
+														StandardTensors::dC_dF(F)
+													 )
+					   )
+ 				+ double_contract<2,0,3,1>( Tensor<4,dim>(K), dS_dF );
 	}
 }
 
