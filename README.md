@@ -109,3 +109,5 @@ That should be it!
 - "Reduced and selective integration techniques in the finite element analysis of plates" by Hughes et al. https://doi.org/10.1016/0029-5493(78)90184-X
 - "On volumetric locking of low-order solid and solid-shell elements for finite elastoviscoplastic deformations and selective reduced integration" by Doll et al. https://www.emerald.com/insight/content/doi/10.1108/02644400010355871/full/html
 
+## ToDo
+- maybe we can merge the two fe_values objects and both integration rules, so we can simplify the usage
