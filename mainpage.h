@@ -269,7 +269,7 @@ a trivial normal-shear split.
 \code
 			 if ( SRI_active )
 			 {
-				stress_part = SRI::part<dim>( DeformationGradient, stress_S, SRi_type, k, n_q_points );
+				stress_part = SRI::part<dim>( DeformationGradient, stress_S, SRI_type, k, n_q_points );
 				Tangent_part = SRI::part<dim>( DeformationGradient, stress_S, dS_dC, SRI_type, k, n_q_points );
 			 }
 \endcode
