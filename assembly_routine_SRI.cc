@@ -187,7 +187,7 @@ void Solid<dim>::assemble_system_fstrain( /*output-> tangent_matrix, system_rhs*
 			// a trivial normal-shear split.
 			 if ( SRI_active )
 			 {
-				stress_part = SRI::part<dim>( DeformationGradient, stress_S, SRi_type, k, n_q_points );
+				stress_part = SRI::part<dim>( DeformationGradient, stress_S, SRI_type, k, n_q_points );
 				Tangent_part = SRI::part<dim>( DeformationGradient, stress_S, dS_dC, SRI_type, k, n_q_points );
 			 }
 			 // For full integration, we just copy the full tensors into the *_part variables
