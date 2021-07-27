@@ -105,9 +105,10 @@ namespace SRI
 	/**
 	 * Return the Tangent that corresponds to a stress tensor with only normal stresses
 	 */
-	SymmetricTensor<4,3> get_shear_part( const SymmetricTensor<4,3> &SymTen )
+	template <class TangentTensorClass>
+	TangentTensorClass get_shear_part( const TangentTensorClass &SymTen )
 	{
-		SymmetricTensor<4,3> shear_part (SymTen);
+		TangentTensorClass shear_part (SymTen);
 		// Loop over the normal stress entries (first two indices [m][m] and
 		// set all below entries [o][p] to zero for these related normal stresses
 		for ( unsigned m=0; m<3 ; m++ )
@@ -143,6 +144,15 @@ namespace SRI
 	}
 	
 	
+//	template <class TangentTensorClass>
+//	TangentTensorClass test ( const Tensor<2,3> &F, const SymmetricTensor<2,3> &stress_S, const TangentTensorClass &Tangent )
+//	{
+//
+//		std::cout << "exectued" << std::endl;
+//		return TangentTensorClass ();
+//	}
+
+
 	/**
 	 * Return the second tangent part
 	 */
@@ -155,12 +165,21 @@ namespace SRI
 		else
 			AssertThrow(false, ExcMessage("SRI<< This kind of split is not implemented. Check the available options in SRI.h."));
 	}
-	
+	Tensor<4,3> second_part ( const Tensor<2,3> &F, const SymmetricTensor<2,3> &stress_S, const Tensor<4,3> &Tangent, enums::enum_SRI_type SRI_type )
+	{
+		if ( SRI_type == enums::vol_dev_split )
+			return NLKM::get_dKxS_dF( F, stress_S, Tangent);
+		else if ( SRI_type == enums::shear_normal_split )
+			return get_shear_part(Tangent);
+		else
+			AssertThrow(false, ExcMessage("SRI<< This kind of split is not implemented. Check the available options in SRI.h."));
+	}
 	
 	/**
 	 * Return the first tangent part
 	 */
-	SymmetricTensor<4,3> first_part ( const Tensor<2,3> &F, const SymmetricTensor<2,3> &stress_S, const SymmetricTensor<4,3> &Tangent, enums::enum_SRI_type SRI_type )
+	template <class TangentTensorClass>
+	TangentTensorClass first_part ( const Tensor<2,3> &F, const SymmetricTensor<2,3> &stress_S, const TangentTensorClass &Tangent, enums::enum_SRI_type SRI_type )
 	{
 			return Tangent - second_part( F, stress_S, Tangent, SRI_type );
 	}
@@ -185,6 +204,25 @@ namespace SRI
 	 */
 	template <int dim>
 	SymmetricTensor<4,dim> part ( const Tensor<2,3> &F, const SymmetricTensor<2,3> &stress_S, const SymmetricTensor<4,3> &Tangent,
+										enums::enum_SRI_type SRI_type, const unsigned int k, const unsigned int n_q_points )
+	{
+		if ( assemble_first_part(k,n_q_points) ) // first
+			return extract_dim<dim>( first_part( F, stress_S, Tangent, SRI_type ) );
+		else
+			return extract_dim<dim>( second_part( F, stress_S, Tangent, SRI_type ) );
+	}
+	/**
+	 * Because Tensor<4,3> is entered and Tensor<4,dim> is output, the standard template<class T> did not work, so I copied this single function
+	 * @param F
+	 * @param stress_S
+	 * @param Tangent
+	 * @param SRI_type
+	 * @param k
+	 * @param n_q_points
+	 * @return
+	 */
+	template <int dim>
+	Tensor<4,dim> part ( const Tensor<2,3> &F, const SymmetricTensor<2,3> &stress_S, const Tensor<4,3> &Tangent,
 										enums::enum_SRI_type SRI_type, const unsigned int k, const unsigned int n_q_points )
 	{
 		if ( assemble_first_part(k,n_q_points) ) // first
