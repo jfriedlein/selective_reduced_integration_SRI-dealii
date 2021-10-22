@@ -104,11 +104,13 @@ namespace SRI
 	
 	/**
 	 * Return the Tangent that corresponds to a stress tensor with only normal stresses
+	 * Templated by TangentTensorClass, so we can use this with symmetric and unsymmetric fourth order tensors
+	 * @todo Add some asserts to ensure that the size of input tensor is okay
 	 */
 	template <class TangentTensorClass>
-	TangentTensorClass get_shear_part( const TangentTensorClass &SymTen )
+	TangentTensorClass get_shear_part( const TangentTensorClass &TangentTen )
 	{
-		TangentTensorClass shear_part (SymTen);
+		TangentTensorClass shear_part (TangentTen);
 		// Loop over the normal stress entries (first two indices [m][m] and
 		// set all below entries [o][p] to zero for these related normal stresses
 		for ( unsigned m=0; m<3 ; m++ )
