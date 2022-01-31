@@ -50,9 +50,9 @@ namespace NLKM
 	{
 		SymmetricTensor<2,dim> RCG_C = symmetrize( transpose(F)*F );
 		SymmetricTensor<2,dim> RCGinv_Cinv = invert(RCG_C);
-		Tensor<2,dim> F_inv = invert(F);
-		Tensor<4,dim> d_Finv_dF = StandardTensors::dFinv_dF( F_inv, true );
-		Tensor<4,dim> d_FT_inv_d_F = StandardTensors::dFTinv_dF( F );
+		//Tensor<2,dim> F_inv = invert(F);
+		//Tensor<4,dim> d_Finv_dF = StandardTensors::dFinv_dF( F_inv, true );
+		//Tensor<4,dim> d_FT_inv_d_F = StandardTensors::dFTinv_dF( F );
 		SymmetricTensor<4,dim> K = 1./3. * outer_product( RCGinv_Cinv, RCG_C );
 
  		return 1./3. * (
